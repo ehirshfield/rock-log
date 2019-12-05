@@ -1,2 +1,3 @@
-# rock-log
-A React Native Rock Climbing Mobile Application
+# Rock Log
+
+A rock climbing app for logging training sessions
