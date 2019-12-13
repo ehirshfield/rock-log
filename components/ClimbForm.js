@@ -7,14 +7,19 @@ export default function ClimbForm({ date, total, time, highestDiff }) {
 	return (
 		<View style={styles.formContainer}>
 			<View style={styles.topRow}>
-				<Text>Date: {date}</Text>
-				<Text>Total Climbs: {total}</Text>
+				<Text>Top Climb</Text>
+
+				<Text>Total Climbs</Text>
 			</View>
 			<View style={styles.secondRow}>
-				<Text>Time: {time}</Text>
-				<Text>Highest Difficulty: {highestDiff}</Text>
+				<Text style={styles.largeText}>{highestDiff}</Text>
+				<Text style={styles.largeText}>{total}</Text>
 			</View>
-			<ClimbButton color='green' title='Edit Climb' />
+			<View style={styles.thirdRow}>
+				<Text>Date: {date}</Text>
+				<Text>Time: {time}</Text>
+			</View>
+			<ClimbButton color='green' title='View Climbs' />
 		</View>
 	);
 }
@@ -32,11 +37,23 @@ const styles = StyleSheet.create({
 	topRow: {
 		flex: 1,
 		flexDirection: 'row',
+		justifyContent: 'space-between',
+		alignItems: 'center',
+		paddingHorizontal: 30
+	},
+	thirdRow: {
+		flex: 1,
+		flexDirection: 'row',
 		justifyContent: 'space-between'
 	},
 	secondRow: {
 		flex: 1,
 		flexDirection: 'row',
-		justifyContent: 'space-between'
+		alignContent: 'center',
+		justifyContent: 'space-between',
+		paddingHorizontal: 15
+	},
+	largeText: {
+		fontSize: 100
 	}
 });
