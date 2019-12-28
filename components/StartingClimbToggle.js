@@ -2,11 +2,12 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 
 import ClimbButton from './ClimbButton';
+import CurrentClimb from './CurrentClimb';
 
 export default function StartingClimbToggle({ isOpen }) {
 	return (
 		<View style={styles.formContainer}>
-			{isOpen ? <ClimbForm /> : <ClimbButton color='red' title='+' />}
+			{isOpen ? <CurrentClimb /> : <ClimbButton color='red' title='+' />}
 		</View>
 	);
 }

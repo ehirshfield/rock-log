@@ -7,7 +7,7 @@ import StartingClimbToggle from './StartingClimbToggle';
 export default function ClimbList({}) {
 	return (
 		<View>
-			<StartingClimbToggle />
+			<StartingClimbToggle isOpen />
 			<ClimbForm
 				date='10/09/19'
 				total={20}
