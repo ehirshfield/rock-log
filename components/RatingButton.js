@@ -1,13 +1,20 @@
 import { StyleSheet, TouchableOpacity, Text } from 'react-native';
 import React from 'react';
 
-export default function RatingButton({ color, title, onPress }) {
+export default function RatingButton({ color, title, onPress, largeRating }) {
 	return (
 		<TouchableOpacity
 			style={[styles.button, { borderColor: color }]}
 			onPress={onPress}
 		>
-			<Text style={[styles.buttonText, { color }]}>{title}</Text>
+			<Text
+				style={[
+					largeRating ? styles.largeRatingText : styles.buttonText,
+					{ color }
+				]}
+			>
+				{title}
+			</Text>
 		</TouchableOpacity>
 	);
 }
@@ -15,23 +22,23 @@ export default function RatingButton({ color, title, onPress }) {
 const styles = StyleSheet.create({
 	button: {
 		marginTop: 10,
-		minWidth: 100,
-		height: 100,
-		width: 175,
+		width: 135,
 		borderRadius: 5,
-		justifyContent: 'center',
 		alignItems: 'center',
-		backgroundColor: '#2AC062',
-		shadowColor: '#2AC062',
+		backgroundColor: '#2AC099',
+		shadowColor: '#2AC099',
 		shadowOpacity: 0.4,
 		shadowOffset: { height: 10, width: 0 },
-		shadowRadius: 20,
-		flex: 1
+		shadowRadius: 20
 	},
 	buttonText: {
 		textAlign: 'center',
 		fontWeight: 'bold',
-		fontSize: 80,
-		padding: 5
+		fontSize: 80
+	},
+	largeRatingText: {
+		textAlign: 'center',
+		fontWeight: 'bold',
+		fontSize: 70
 	}
 });
