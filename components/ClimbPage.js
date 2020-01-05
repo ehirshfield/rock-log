@@ -1,17 +1,21 @@
 import React from 'react';
-import { StyleSheet, Text, View, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, SafeAreaView } from 'react-native';
 
 import ClimbList from './ClimbList';
 
 export default function ClimbPage({}) {
 	return (
-		<View>
-			<View style={styles.titleContainer}>
-				<Text style={styles.title}>Climb Page</Text>
+		<View style={styles.main}>
+			<View style={styles.container}>
+				<View style={styles.titleContainer}>
+					<Text style={styles.title}>Climb Page</Text>
+				</View>
+				<SafeAreaView style={styles.pageView}>
+					<ScrollView>
+						<ClimbList />
+					</ScrollView>
+				</SafeAreaView>
 			</View>
-			<ScrollView>
-				<ClimbList />
-			</ScrollView>
 		</View>
 	);
 }
@@ -28,5 +32,17 @@ const styles = StyleSheet.create({
 		fontSize: 18,
 		fontWeight: 'bold',
 		textAlign: 'center'
+	},
+	container: {
+		flex: 1
+	},
+	main: {
+		flex: 1
+	},
+	scrollContainer: {
+		flexGrow: 1
+	},
+	pageView: {
+		flex: 1
 	}
 });
