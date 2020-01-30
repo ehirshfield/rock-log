@@ -6,7 +6,7 @@ import CurrentClimb from './CurrentClimb';
 
 export default class StartingClimbToggle extends React.Component {
 	state = {
-		isOpen: true
+		isOpen: false
 	};
 
 	handleCurrentClimbOpen = () => {

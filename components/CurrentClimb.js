@@ -2,6 +2,7 @@ import React from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 import RatingButton from './RatingButton';
 import ClimbButton from './ClimbButton';
+import SingleClimb from './SingleClimb';
 
 let time;
 
@@ -12,12 +13,14 @@ export default class CurrentClimb extends React.Component {
 			hours: 0,
 			minutes: 0,
 			seconds: 0,
-			isPaused: false
+			isPaused: false,
+			workingOnProblem: false
 		};
 		this.startTimer = this.startTimer.bind(this);
 		this.finishClimbing = this.finishClimbing.bind(this);
 		this.pauseClimbing = this.pauseClimbing.bind(this);
 		this.resumeClimbing = this.resumeClimbing.bind(this);
+		this.logRating = this.logRating.bind(this);
 	}
 
 	startTimer() {
@@ -50,10 +53,29 @@ export default class CurrentClimb extends React.Component {
 		}
 		return ratings.map((item, index) => {
 			if (item.length > 2) {
-				return <RatingButton key={index} title={item} largeRating />;
+				return (
+					<RatingButton
+						key={index}
+						title={item}
+						onPress={this.logRating}
+						largeRating
+					/>
+				);
 			} else {
-				return <RatingButton key={index} title={item} />;
+				return (
+					<RatingButton
+						key={index}
+						title={item}
+						onPress={this.logRating}
+					/>
+				);
 			}
+		});
+	}
+
+	logRating() {
+		this.setState({
+			workingOnProblem: true
 		});
 	}
 
@@ -81,10 +103,15 @@ export default class CurrentClimb extends React.Component {
 
 	render() {
 		const climbRatings = this.generateRatings(12);
-		const { isPaused } = this.state;
+		const { isPaused, workingOnProblem } = this.state;
 		return (
 			<View style={styles.currentClimbContainer}>
-				<View style={styles.ratingContainer}>{climbRatings}</View>
+				{workingOnProblem ? (
+					<SingleClimb />
+				) : (
+					<View style={styles.ratingContainer}>{climbRatings}</View>
+				)}
+
 				<View>
 					<Text>{this.state.hours}</Text>
 				</View>
