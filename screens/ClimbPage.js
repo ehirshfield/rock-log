@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View, ScrollView, SafeAreaView } from 'react-native';
 
-import ClimbList from './ClimbList';
+import ClimbList from '../components/ClimbList';
 
 export default function ClimbPage({}) {
 	return (
