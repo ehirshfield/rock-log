@@ -3,6 +3,9 @@ import { View, StyleSheet, Text } from 'react-native';
 import RatingButton from './RatingButton';
 import ClimbButton from './ClimbButton';
 import SingleClimb from './SingleClimb';
+import ClimbTimer from './ClimbTimer';
+
+import { getUsers } from '../utils/user';
 
 let time;
 
@@ -13,8 +16,9 @@ export default class CurrentClimb extends React.Component {
 			hours: 0,
 			minutes: 0,
 			seconds: 0,
-			isPaused: false,
-			workingOnProblem: false
+			isPaused: false
+			// workingOnProblem: false,
+			// currentClimb: 'V3'
 		};
 		this.startTimer = this.startTimer.bind(this);
 		this.finishClimbing = this.finishClimbing.bind(this);
@@ -57,7 +61,7 @@ export default class CurrentClimb extends React.Component {
 					<RatingButton
 						key={index}
 						title={item}
-						onPress={this.logRating}
+						onPress={() => this.logRating(item)}
 						largeRating
 					/>
 				);
@@ -66,17 +70,22 @@ export default class CurrentClimb extends React.Component {
 					<RatingButton
 						key={index}
 						title={item}
-						onPress={this.logRating}
+						onPress={() => this.logRating(item)}
 					/>
 				);
 			}
 		});
 	}
 
-	logRating() {
-		this.setState({
-			workingOnProblem: true
-		});
+	// openSingleClimb(rating) {
+	// 	this.setState({
+	// 		workingOnProblem: true,
+	// 		currentClimb: rating
+	// 	});
+	// }
+
+	logRating(rating) {
+		console.log('Climbed: ', rating);
 	}
 
 	componentDidMount() {
@@ -103,35 +112,31 @@ export default class CurrentClimb extends React.Component {
 
 	render() {
 		const climbRatings = this.generateRatings(12);
-		const { isPaused, workingOnProblem } = this.state;
+		const { isPaused } = this.state;
 		return (
 			<View style={styles.currentClimbContainer}>
-				{workingOnProblem ? (
-					<SingleClimb />
-				) : (
-					<View style={styles.ratingContainer}>{climbRatings}</View>
-				)}
+				<View style={styles.ratingContainer}>{climbRatings}</View>
 
-				<View>
-					<Text>{this.state.hours}</Text>
-				</View>
-				<View>
-					<Text>{this.state.minutes}</Text>
-				</View>
-				<View>
-					<Text>{this.state.seconds}</Text>
-				</View>
+				<ClimbTimer
+					hours={this.state.hours}
+					minutes={this.state.minutes}
+					seconds={this.state.seconds}
+				/>
 				<View style={styles.endSessionButtonContainer}>
 					{isPaused ? (
 						<ClimbButton
 							title='Resume Climbing'
-							onPress={this.resumeClimbing}
+							onPress={() => {
+								this.resumeClimbing();
+							}}
 							color='green'
 						/>
 					) : (
 						<ClimbButton
 							title='Pause Climbing'
-							onPress={this.pauseClimbing}
+							onPress={() => {
+								this.pauseClimbing();
+							}}
 							color='red'
 						/>
 					)}

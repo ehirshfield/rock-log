@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 
 export default class SingleClimb extends React.Component {
 	constructor(props) {
@@ -9,9 +9,36 @@ export default class SingleClimb extends React.Component {
 
 	render() {
 		return (
-			<View>
-				<Text> Sungle Climb Yaya!</Text>
-			</View>
+			<TouchableOpacity
+				style={[styles.button, { borderColor: 'red' }]}
+				onPress='hello'
+			>
+				<Text style={styles.buttonText}>Log Climb</Text>
+			</TouchableOpacity>
 		);
 	}
 }
+
+const styles = StyleSheet.create({
+	button: {
+		marginTop: 10,
+		width: 135,
+		borderRadius: 5,
+		alignItems: 'center',
+		backgroundColor: 'blue',
+		shadowColor: 'blue',
+		shadowOpacity: 0.4,
+		shadowOffset: { height: 10, width: 0 },
+		shadowRadius: 20
+	},
+	buttonText: {
+		textAlign: 'center',
+		fontWeight: 'bold',
+		fontSize: 80
+	},
+	largeRatingText: {
+		textAlign: 'center',
+		fontWeight: 'bold',
+		fontSize: 70
+	}
+});

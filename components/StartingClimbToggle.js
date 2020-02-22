@@ -29,7 +29,9 @@ export default class StartingClimbToggle extends React.Component {
 					<ClimbButton
 						color='red'
 						title='+'
-						onPress={this.handleCurrentClimbOpen}
+						onPress={() => {
+							this.handleCurrentClimbOpen();
+						}}
 					/>
 				)}
 			</View>

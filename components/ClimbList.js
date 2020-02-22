@@ -4,6 +4,8 @@ import { View } from 'react-native';
 import ClimbForm from './ClimbForm';
 import StartingClimbToggle from './StartingClimbToggle';
 
+// Think about using Flatlist in the future for this list
+
 export default class ClimbList extends React.Component {
 	state = {
 		finishedClimbs: [
