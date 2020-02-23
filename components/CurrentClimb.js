@@ -2,10 +2,7 @@ import React from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 import RatingButton from './RatingButton';
 import ClimbButton from './ClimbButton';
-import SingleClimb from './SingleClimb';
 import ClimbTimer from './ClimbTimer';
-
-import { getUsers } from '../utils/user';
 
 let time;
 
@@ -17,8 +14,6 @@ export default class CurrentClimb extends React.Component {
 			minutes: 0,
 			seconds: 0,
 			isPaused: false
-			// workingOnProblem: false,
-			// currentClimb: 'V3'
 		};
 		this.startTimer = this.startTimer.bind(this);
 		this.finishClimbing = this.finishClimbing.bind(this);
@@ -76,13 +71,6 @@ export default class CurrentClimb extends React.Component {
 			}
 		});
 	}
-
-	// openSingleClimb(rating) {
-	// 	this.setState({
-	// 		workingOnProblem: true,
-	// 		currentClimb: rating
-	// 	});
-	// }
 
 	logRating(rating) {
 		console.log('Climbed: ', rating);

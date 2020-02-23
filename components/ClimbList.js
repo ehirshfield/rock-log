@@ -1,40 +1,75 @@
 import React from 'react';
-import { View } from 'react-native';
+import { View, ActivityIndicator, StyleSheet } from 'react-native';
+import { decode as atob, encode as btoa } from 'base-64';
 
 import ClimbForm from './ClimbForm';
 import StartingClimbToggle from './StartingClimbToggle';
+import { firestore } from '../config/firebase';
 
 // Think about using Flatlist in the future for this list
 
 export default class ClimbList extends React.Component {
-	state = {
-		finishedClimbs: [
-			{
-				date: '10/09/19',
-				total: 20,
-				highestDiff: 'V5',
-				time: 13209478275
-			},
-			{
-				date: '12/12/19',
-				total: 10,
-				highestDiff: 'V7',
-				time: 213243422
-			}
-		]
-	};
+	constructor() {
+		super();
+		this.ref = firestore.collection('climbs');
+		this.curious = null;
+		this.state = {
+			isLoading: true,
+			climbs: []
+		};
+		this.onCollectionUpdate = this.onCollectionUpdate.bind(this);
+	}
+
+	onCollectionUpdate(querySnapshot) {
+		const climbs = [];
+		querySnapshot.forEach(doc => {
+			const {
+				date,
+				highestDifficulty,
+				hours,
+				minutes,
+				seconds,
+				total
+			} = doc.data();
+			climbs.push({
+				key: doc.id,
+				date,
+				highestDifficulty,
+				hours,
+				minutes,
+				seconds,
+				total
+			});
+		});
+		this.setState({
+			climbs,
+			isLoading: false
+		});
+	}
+
+	componentDidMount() {
+		this.curious = this.ref.onSnapshot(this.onCollectionUpdate);
+	}
+
 	render() {
+		if (this.state.isLoading) {
+			return (
+				<View style={styles.activity}>
+					<ActivityIndicator size='large' color='#0000ff' />
+				</View>
+			);
+		}
 		return (
 			<View>
 				<StartingClimbToggle />
-				{this.state.finishedClimbs.map((climb, index) => {
+				{this.state.climbs.map((climb, index) => {
 					return (
 						<ClimbForm
 							key={index}
 							date={climb.date}
 							total={climb.total}
-							highestDiff={climb.highestDiff}
-							time={climb.time}
+							highestDiff={climb.highestDifficulty}
+							time={climb.minutes}
 						/>
 					);
 				})}
@@ -42,3 +77,15 @@ export default class ClimbList extends React.Component {
 		);
 	}
 }
+
+const styles = StyleSheet.create({
+	activity: {
+		position: 'absolute',
+		left: 0,
+		right: 0,
+		top: 0,
+		bottom: 0,
+		alignItems: 'center',
+		justifyContent: 'center'
+	}
+});

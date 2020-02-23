@@ -1,3 +1,4 @@
+import './utils/base64Polyfill';
 import React from 'react';
 import { StyleSheet, View, Platform } from 'react-native';
 import Constants from 'expo-constants';
