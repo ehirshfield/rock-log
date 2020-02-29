@@ -8,16 +8,16 @@ export default class ProfilePage extends React.Component {
 		user: {}
 	};
 
-	async componentDidMount() {
-		const user = await getCurrentUser();
+	// async componentDidMount() {
+	// 	const user = await getCurrentUser();
 
-		this.setState({
-			user
-		});
-	}
+	// 	this.setState({
+	// 		user
+	// 	});
+	// }
 
 	render() {
-		const { name, email, id } = this.state.user;
+		// const { name, email, id } = this.state.user;
 		return (
 			<View>
 				<Text>Profile Page!</Text>
