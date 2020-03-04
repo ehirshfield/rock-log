@@ -4,20 +4,36 @@ import React from 'react';
 import { StyleSheet, View, Platform } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Foundation } from '@expo/vector-icons';
 
 import ClimbPage from './screens/ClimbPage';
 import ProfilePage from './screens/ProfilePage';
+import FriendsPage from './screens/FriendsPage';
+import ChallengePage from './screens/ChallengePage';
+import StartUpPage from './screens/StartUpPage';
+import LoginPage from './screens/LoginPage';
+import SignUpPage from './screens/SignUpPage';
 
 const Stack = createStackNavigator();
+const Tab = createBottomTabNavigator();
 
 export default class App extends React.Component {
 	render() {
 		return (
 			<View style={styles.container}>
 				<NavigationContainer>
-					<Stack.Navigator>
-						<Stack.Screen name='ClimbPage' component={ClimbPage} />
+					<Stack.Navigator initialRouteName='StartUpPage'>
+						<Stack.Screen
+							name='StartUpPage'
+							component={StartUpPage}
+						/>
+						<Stack.Screen name='LoginPage' component={LoginPage} />
+						<Stack.Screen
+							name='SignUpPage'
+							component={SignUpPage}
+						/>
+						<Stack.Screen name='MainApp' component={MainApp} />
 					</Stack.Navigator>
 				</NavigationContainer>
 			</View>
@@ -30,9 +46,6 @@ const platformVersion =
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1
-	},
-	climbPage: {
 		flex: 1,
 		marginTop:
 			Platform.OS === 'android' || platformVersion < 11
@@ -41,21 +54,53 @@ const styles = StyleSheet.create({
 	}
 });
 
-{
-	/* <SafeAreaProvider>
-				<NavigationContainer>
-					<Stack.Navigator>
-						<Stack.Screen
-							name='ClimbPage'
-							component={ClimbPage}
-							options={{ title: 'Climb Page' }}
-						/>
-						<Stack.Screen
-							name='ProfilePage'
-							component={ProfilePage}
-							options={{ title: 'Profile Page' }}
-						/>
-					</Stack.Navigator>
-				</NavigationContainer>
-			</SafeAreaProvider> */
+function MainApp() {
+	return (
+		<Tab.Navigator
+			initialRouteName='ClimbPage'
+			screenOptions={({ route }) => ({
+				tabBarIcon: ({ focused, color, size }) => {
+					let iconName;
+					if (route.name === 'ProfilePage') {
+						iconName = 'foot';
+					} else if (route.name === 'ClimbPage') {
+						iconName = 'mountains';
+					} else if (route.name === 'FriendsPage') {
+						iconName = 'arrows-in';
+					} else if (route.name === 'ChallengePage') {
+						iconName = 'target';
+					}
+
+					return (
+						<Foundation name={iconName} size={size} color={color} />
+					);
+				}
+			})}
+			tabBarOptions={{
+				activeTintColor: 'tomato',
+				inactiveTintColor: 'gray'
+			}}
+		>
+			<Tab.Screen
+				name='ClimbPage'
+				component={ClimbPage}
+				options={{ title: 'Climbs' }}
+			/>
+			<Tab.Screen
+				name='ChallengePage'
+				component={ChallengePage}
+				options={{ title: 'Challenge' }}
+			/>
+			<Tab.Screen
+				name='FriendsPage'
+				component={FriendsPage}
+				options={{ title: 'Friends' }}
+			/>
+			<Tab.Screen
+				name='ProfilePage'
+				component={ProfilePage}
+				options={{ title: 'Profile' }}
+			/>
+		</Tab.Navigator>
+	);
 }

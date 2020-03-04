@@ -1,9 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
-import { getCurrentUser } from '../utils/user';
-
-export default class ProfilePage extends React.Component {
+export default class FriendsPage extends React.Component {
 	constructor() {
 		super();
 		this.state = {
@@ -11,20 +9,10 @@ export default class ProfilePage extends React.Component {
 		};
 	}
 
-	async componentDidMount() {
-		const user = await getCurrentUser();
-		this.setState({
-			user
-		});
-	}
-
 	render() {
-		const { name, email } = this.state.user;
 		return (
 			<View>
-				<Text>Profile Page!</Text>
-				<Text>{name}</Text>
-				<Text>{email}</Text>
+				<Text>Friends Page!</Text>
 				<TouchableOpacity
 					onPress={() => {
 						this.props.navigation.navigate('ClimbPage');
@@ -34,10 +22,10 @@ export default class ProfilePage extends React.Component {
 				</TouchableOpacity>
 				<TouchableOpacity
 					onPress={() => {
-						this.props.navigation.navigate('FriendsPage');
+						this.props.navigation.navigate('ProfilePage');
 					}}
 				>
-					<Text>To Friends</Text>
+					<Text>To Profile</Text>
 				</TouchableOpacity>
 			</View>
 		);

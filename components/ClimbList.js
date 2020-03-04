@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, ActivityIndicator, StyleSheet } from 'react-native';
-import { decode as atob, encode as btoa } from 'base-64';
 
 import ClimbForm from './ClimbForm';
 import StartingClimbToggle from './StartingClimbToggle';
