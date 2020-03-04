@@ -11,6 +11,7 @@ import {
 } from 'react-native-dotenv';
 
 import 'firebase/firestore';
+import 'firebase/auth';
 
 const firebaseConfig = {
 	apiKey: API_KEY,
@@ -24,8 +25,10 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-firebase.initializeApp(firebaseConfig);
+if (!firebase.apps.length) {
+	firebase.initializeApp(firebaseConfig);
+}
 // firebase.analytics();
 
 export const firestore = firebase.firestore();
-export default firebase;
+export default firebase.app();
