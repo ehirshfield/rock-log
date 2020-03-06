@@ -3,6 +3,9 @@ import { View, StyleSheet, Text } from 'react-native';
 import RatingButton from './RatingButton';
 import ClimbButton from './ClimbButton';
 import ClimbTimer from './ClimbTimer';
+import moment from 'moment';
+import { firestore } from '../config/firebase';
+import { calculateHighestDifficulty } from '../utils/common';
 
 let time;
 
@@ -13,7 +16,8 @@ export default class CurrentClimb extends React.Component {
 			hours: 0,
 			minutes: 0,
 			seconds: 0,
-			isPaused: false
+			isPaused: false,
+			climbs: []
 		};
 		this.startTimer = this.startTimer.bind(this);
 		this.finishClimbing = this.finishClimbing.bind(this);
@@ -73,7 +77,11 @@ export default class CurrentClimb extends React.Component {
 	}
 
 	logRating(rating) {
-		console.log('Climbed: ', rating);
+		const climbs = this.state.climbs;
+		climbs.push(rating);
+		this.setState({
+			climbs
+		});
 	}
 
 	componentDidMount() {
@@ -81,7 +89,17 @@ export default class CurrentClimb extends React.Component {
 	}
 
 	finishClimbing() {
+		const { climbs, hours, minutes, seconds } = this.state;
 		clearTimeout(time);
+		const highest = calculateHighestDifficulty(climbs);
+		firestore.collection('climbs').add({
+			date: moment().format('MM/DD/YYYY'),
+			highestDifficulty: 'V' + highest,
+			hours: hours,
+			minutes: minutes,
+			seconds: seconds,
+			total: climbs.length
+		});
 	}
 
 	pauseClimbing() {
