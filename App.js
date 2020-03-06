@@ -15,6 +15,8 @@ import StartUpPage from './screens/StartUpPage';
 import LoginPage from './screens/LoginPage';
 import SignUpPage from './screens/SignUpPage';
 
+import { colors } from './theme/index';
+
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -23,7 +25,18 @@ export default class App extends React.Component {
 		return (
 			<View style={styles.container}>
 				<NavigationContainer>
-					<Stack.Navigator initialRouteName='StartUpPage'>
+					<Stack.Navigator
+						initialRouteName='StartUpPage'
+						screenOptions={{
+							headerStyle: {
+								backgroundColor: colors.background
+							},
+							headerTintColor: colors.headingText,
+							headerTitleStyle: {
+								fontWeight: 'bold'
+							}
+						}}
+					>
 						<Stack.Screen
 							name='StartUpPage'
 							component={StartUpPage}
@@ -72,13 +85,25 @@ function MainApp() {
 					}
 
 					return (
-						<Foundation name={iconName} size={size} color={color} />
+						<Foundation
+							name={iconName}
+							size={size}
+							color={color}
+							style={{
+								top: 5,
+								justifyContent: 'center',
+								alignItems: 'center'
+							}}
+						/>
 					);
 				}
 			})}
 			tabBarOptions={{
-				activeTintColor: 'tomato',
-				inactiveTintColor: 'gray'
+				activeTintColor: colors.startingClimbButton,
+				inactiveTintColor: 'gray',
+				style: {
+					backgroundColor: colors.background
+				}
 			}}
 		>
 			<Tab.Screen
