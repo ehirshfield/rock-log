@@ -1,5 +1,6 @@
 import { StyleSheet, TouchableOpacity, Text } from 'react-native';
 import React from 'react';
+import { colors } from '../theme';
 
 export default function RatingButton({ color, title, onPress, largeRating }) {
 	return (
@@ -25,9 +26,9 @@ const styles = StyleSheet.create({
 		width: 135,
 		borderRadius: 5,
 		alignItems: 'center',
-		backgroundColor: '#2AC099',
-		shadowColor: '#2AC099',
-		shadowOpacity: 0.4,
+		backgroundColor: colors.ratingButtons,
+		shadowColor: colors.ratingButtons,
+		shadowOpacity: 0.3,
 		shadowOffset: { height: 10, width: 0 },
 		shadowRadius: 20
 	},

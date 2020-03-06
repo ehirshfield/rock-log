@@ -7,6 +7,7 @@ import {
 	SafeAreaView,
 	TouchableOpacity
 } from 'react-native';
+import { colors } from '../theme/index';
 
 import ClimbList from '../components/ClimbList';
 
@@ -14,20 +15,11 @@ export default function ClimbPage({ navigation }) {
 	return (
 		<View style={styles.main}>
 			<View style={styles.container}>
-				<SafeAreaView style={styles.pageView}>
+				<SafeAreaView style={styles.climbList}>
 					<ScrollView>
 						<ClimbList />
 					</ScrollView>
 				</SafeAreaView>
-			</View>
-			<View>
-				<TouchableOpacity
-					onPress={() => {
-						navigation.navigate('ProfilePage');
-					}}
-				>
-					<Text>To Profile</Text>
-				</TouchableOpacity>
 			</View>
 		</View>
 	);
@@ -43,12 +35,13 @@ const styles = StyleSheet.create({
 		flex: 1
 	},
 	main: {
-		flex: 1
+		flex: 1,
+		backgroundColor: colors.background
 	},
 	scrollContainer: {
 		flexGrow: 1
 	},
-	pageView: {
+	climbList: {
 		flex: 1
 	}
 });

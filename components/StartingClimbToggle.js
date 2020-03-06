@@ -1,8 +1,9 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 
-import ClimbButton from './ClimbButton';
 import CurrentClimb from './CurrentClimb';
+import StartingClimbButton from './StartingClimbButton';
+import { colors } from '../theme';
 
 export default class StartingClimbToggle extends React.Component {
 	state = {
@@ -24,11 +25,11 @@ export default class StartingClimbToggle extends React.Component {
 		return (
 			<View style={styles.formContainer}>
 				{isOpen ? (
-					<CurrentClimb onFormClose={this.handleFormClose} />
+					<CurrentClimb onFormClose={() => this.handleFormClose()} />
 				) : (
-					<ClimbButton
-						color='red'
-						title='+'
+					<StartingClimbButton
+						color={colors.startingClimbButton}
+						title='Start Climbing Session'
 						onPress={() => {
 							this.handleCurrentClimbOpen();
 						}}
@@ -41,10 +42,12 @@ export default class StartingClimbToggle extends React.Component {
 
 const styles = StyleSheet.create({
 	formContainer: {
-		backgroundColor: 'white',
+		backgroundColor: colors.background,
+		borderColor: colors.background,
+		borderWidth: 2,
 		borderRadius: 10,
-		padding: 10,
-		margin: 5,
-		marginBottom: 0
+		marginRight: 15,
+		marginLeft: 15,
+		marginTop: 10
 	}
 });

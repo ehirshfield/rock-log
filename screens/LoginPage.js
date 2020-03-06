@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, TextInput, View, Button } from 'react-native';
 import firebase from '../config/firebase';
+import { colors } from '../theme/index';
 
 export default class LoginPage extends React.Component {
 	state = { email: '', password: '', errorMessage: null };
@@ -17,7 +18,7 @@ export default class LoginPage extends React.Component {
 	render() {
 		return (
 			<View style={styles.container}>
-				<Text>Login</Text>
+				<Text style={styles.plainText}>Login</Text>
 				{this.state.errorMessage && (
 					<Text style={{ color: 'red' }}>
 						{this.state.errorMessage}
@@ -52,7 +53,8 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		justifyContent: 'center',
-		alignItems: 'center'
+		alignItems: 'center',
+		backgroundColor: colors.background
 	},
 	textInput: {
 		height: 40,
@@ -60,5 +62,8 @@ const styles = StyleSheet.create({
 		borderColor: 'gray',
 		borderWidth: 1,
 		marginTop: 8
+	},
+	plainText: {
+		backgroundColor: colors.paragraphText
 	}
 });

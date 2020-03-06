@@ -2,22 +2,23 @@ import React from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 
 import ClimbButton from './ClimbButton';
+import { colors } from '../theme';
 
 export default function ClimbForm({ date, total, time, highestDiff }) {
 	return (
 		<View style={styles.formContainer}>
 			<View style={styles.topRow}>
-				<Text>Top Climb</Text>
+				<Text style={styles.normalText}>Top Climb</Text>
 
-				<Text>Total Climbs</Text>
+				<Text style={styles.normalText}>Total Climbs</Text>
 			</View>
 			<View style={styles.secondRow}>
 				<Text style={styles.largeText}>{highestDiff}</Text>
 				<Text style={styles.largeText}>{total}</Text>
 			</View>
 			<View style={styles.thirdRow}>
-				<Text>Date: {date}</Text>
-				<Text>Time: {time}</Text>
+				<Text style={styles.normalText}>Date: {date}</Text>
+				<Text style={styles.normalText}>Time: {time}</Text>
 			</View>
 			<ClimbButton color='green' title='View Climbs' />
 		</View>
@@ -26,7 +27,7 @@ export default function ClimbForm({ date, total, time, highestDiff }) {
 
 const styles = StyleSheet.create({
 	formContainer: {
-		backgroundColor: 'white',
+		backgroundColor: colors.background,
 		borderColor: '#d6d7da',
 		borderWidth: 2,
 		borderRadius: 10,
@@ -54,6 +55,10 @@ const styles = StyleSheet.create({
 		paddingHorizontal: 15
 	},
 	largeText: {
-		fontSize: 100
+		fontSize: 100,
+		color: colors.paragraphText
+	},
+	normalText: {
+		color: colors.paragraphText
 	}
 });
