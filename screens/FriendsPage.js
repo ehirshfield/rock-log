@@ -1,5 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import FriendsList from '../components/FriendsList';
+import { colors } from '../theme';
 
 export default class FriendsPage extends React.Component {
 	constructor() {
@@ -11,23 +13,31 @@ export default class FriendsPage extends React.Component {
 
 	render() {
 		return (
-			<View>
-				<Text>Friends Page!</Text>
-				<TouchableOpacity
-					onPress={() => {
-						this.props.navigation.navigate('ClimbPage');
-					}}
-				>
-					<Text>To Climb</Text>
-				</TouchableOpacity>
-				<TouchableOpacity
-					onPress={() => {
-						this.props.navigation.navigate('ProfilePage');
-					}}
-				>
-					<Text>To Profile</Text>
-				</TouchableOpacity>
+			<View style={styles.container}>
+				<Text style={styles.header}>Friends Page!</Text>
+				<FriendsList
+					friends={[
+						{
+							id: '123',
+							name: 'Lola'
+						},
+						{
+							id: '234',
+							name: 'Dmitri'
+						}
+					]}
+				/>
 			</View>
 		);
 	}
 }
+
+const styles = StyleSheet.create({
+	container: {
+		flex: 1,
+		backgroundColor: colors.background
+	},
+	header: {
+		color: colors.paragraphText
+	}
+});

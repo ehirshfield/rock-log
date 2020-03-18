@@ -1,45 +1,113 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-
-import { getCurrentUser } from '../utils/user';
+import { View, Text, StyleSheet, ActivityIndicator, Image } from 'react-native';
+import { firestore } from '../config/firebase';
+import firebase from '../config/firebase';
+import { colors } from '../theme';
+import ClimbButton from '../components/ClimbButton';
 
 export default class ProfilePage extends React.Component {
 	constructor() {
 		super();
+		this.userEmail = firebase.auth().currentUser.email || null;
 		this.state = {
-			user: {}
+			user: {},
+			isLoading: true,
+			errorMessage: null
 		};
 	}
 
-	async componentDidMount() {
-		const user = await getCurrentUser();
-		this.setState({
-			user
-		});
+	handleSignOut() {
+		firebase
+			.auth()
+			.signOut()
+			.then(() => {
+				console.log('signout successful!');
+				this.props.navigation.navigate('LoginPage');
+			})
+			.catch(error => {
+				this.setState({ errorMessage: error.message });
+				console.log('error :', error);
+			});
+	}
+
+	componentDidMount() {
+		firestore
+			.collection('users')
+			.where('email', '==', this.userEmail)
+			.get()
+			.then(snap => {
+				snap.forEach(doc => {
+					this.setState({
+						user: doc.data(),
+						isLoading: false
+					});
+				});
+			})
+			.catch(error => {
+				this.setState({
+					errorMessage: error.message
+				});
+				console.log('error :', error);
+			});
 	}
 
 	render() {
-		const { name, email } = this.state.user;
+		const { firstName, email, nickname } = this.state.user;
+		if (this.state.isLoading) {
+			return (
+				<View style={styles.activity}>
+					<ActivityIndicator size='large' color='#0000ff' />
+				</View>
+			);
+		}
 		return (
-			<View>
+			<View style={styles.container}>
+				{this.state.errorMessage && (
+					<Text style={{ color: 'red' }}>
+						{this.state.errorMessage}
+					</Text>
+				)}
+				{/* <Image
+					source={require('../assets/profile.jpg')}
+					style={{
+						flex: 1,
+						alignSelf: 'stretch',
+						width: undefined,
+						height: undefined
+					}}
+					resizeMode='contain'
+				/> */}
 				<Text>Profile Page!</Text>
-				<Text>{name}</Text>
+				<Text>{firstName ? firstName : nickname}</Text>
 				<Text>{email}</Text>
-				<TouchableOpacity
-					onPress={() => {
-						this.props.navigation.navigate('ClimbPage');
-					}}
-				>
-					<Text>To Climb</Text>
-				</TouchableOpacity>
-				<TouchableOpacity
-					onPress={() => {
-						this.props.navigation.navigate('FriendsPage');
-					}}
-				>
-					<Text>To Friends</Text>
-				</TouchableOpacity>
+				<ClimbButton
+					color={colors.signoutButton}
+					title='Sign Out'
+					onPress={this.handleSignOut}
+				/>
 			</View>
 		);
 	}
 }
+
+const styles = StyleSheet.create({
+	activity: {
+		position: 'absolute',
+		left: 0,
+		right: 0,
+		top: 0,
+		bottom: 0,
+		alignItems: 'center',
+		justifyContent: 'center'
+	},
+	container: {
+		position: 'absolute',
+		left: 0,
+		right: 0,
+		top: 0,
+		bottom: 0,
+		alignItems: 'center',
+		justifyContent: 'center',
+		backgroundColor: colors.background
+	}
+});

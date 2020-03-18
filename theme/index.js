@@ -23,5 +23,6 @@ export const colors = {
 	background: palette.light_black,
 	climbBackground: palette.vice_grey,
 	ratingButtons: palette.neon_blue,
-	startingClimbButton: palette.neon_pink
+	startingClimbButton: palette.neon_pink,
+	signoutButton: palette.vice_blue
 };
