@@ -4,13 +4,17 @@ import { View, ActivityIndicator, StyleSheet } from 'react-native';
 import ClimbForm from './ClimbForm';
 import StartingClimbToggle from './StartingClimbToggle';
 import { firestore } from '../config/firebase';
+import firebase from '../config/firebase';
 
 // Think about using Flatlist in the future for this list
 
 export default class ClimbList extends React.Component {
 	constructor() {
 		super();
-		this.ref = firestore.collection('climbs');
+		this.userId = firebase.auth().currentUser.uid || null;
+		this.ref = firestore
+			.collection('climbs')
+			.where('userId', '==', this.userId);
 		this.curious = null;
 		this.state = {
 			isLoading: true,

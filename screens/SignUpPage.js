@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, TextInput, View, Button } from 'react-native';
 import firebase from '../config/firebase';
+import { firestore } from '../config/firebase';
 
 export default class SignUpPage extends React.Component {
 	state = { email: '', password: '', errorMessage: null };
@@ -10,7 +11,12 @@ export default class SignUpPage extends React.Component {
 		firebase
 			.auth()
 			.createUserWithEmailAndPassword(email, password)
-			.then(user => this.props.navigation.navigate('MainApp'))
+			.then(() => {
+				firestore.collection('users').add({
+					email
+				});
+				this.props.navigation.navigate('MainApp');
+			})
 			.catch(error => this.setState({ errorMessage: error.message }));
 	};
 

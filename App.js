@@ -46,7 +46,11 @@ export default class App extends React.Component {
 							name='SignUpPage'
 							component={SignUpPage}
 						/>
-						<Stack.Screen name='MainApp' component={MainApp} />
+						<Stack.Screen
+							name='MainApp'
+							component={MainApp}
+							options={{ headerShown: false }}
+						/>
 					</Stack.Navigator>
 				</NavigationContainer>
 			</View>
@@ -102,7 +106,8 @@ function MainApp() {
 				activeTintColor: colors.startingClimbButton,
 				inactiveTintColor: 'gray',
 				style: {
-					backgroundColor: colors.background
+					backgroundColor: colors.background,
+					borderTopColor: 'transparent'
 				}
 			}}
 		>
