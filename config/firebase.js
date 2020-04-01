@@ -1,4 +1,4 @@
-import firebase from 'firebase/app';
+import initFirebase from 'firebase/app';
 import {
 	API_KEY,
 	AUTH_DOMAIN,
@@ -25,10 +25,10 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-if (!firebase.apps.length) {
-	firebase.initializeApp(firebaseConfig);
+if (!initFirebase.apps.length) {
+	initFirebase.initializeApp(firebaseConfig);
 }
 // firebase.analytics();
 
-export const firestore = firebase.firestore();
-export default firebase.app();
+export const firestore = initFirebase.firestore();
+export const firebase = initFirebase.app();

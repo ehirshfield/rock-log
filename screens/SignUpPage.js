@@ -1,7 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, TextInput, View, Button } from 'react-native';
-import firebase from '../config/firebase';
-import { firestore } from '../config/firebase';
+import { firestore, firebase } from '../config/firebase';
 
 export default class SignUpPage extends React.Component {
 	state = { email: '', password: '', errorMessage: null };

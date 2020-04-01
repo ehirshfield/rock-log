@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
-import firebase from '../config/firebase';
+import { firebase } from '../config/firebase';
 
 export default class StartUpPage extends React.Component {
 	constructor() {

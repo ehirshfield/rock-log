@@ -3,8 +3,7 @@ import { View, ActivityIndicator, StyleSheet } from 'react-native';
 
 import ClimbForm from './ClimbForm';
 import StartingClimbToggle from './StartingClimbToggle';
-import { firestore } from '../config/firebase';
-import firebase from '../config/firebase';
+import { firestore, firebase } from '../config/firebase';
 
 // Think about using Flatlist in the future for this list
 
@@ -53,6 +52,11 @@ export default class ClimbList extends React.Component {
 	componentDidMount() {
 		this.curious = this.ref.onSnapshot(this.onCollectionUpdate);
 	}
+
+	//UNMOUNT LISTNER
+	// componentWillUnmount() {
+	// 	this.curious.off();
+	// }
 
 	render() {
 		if (this.state.isLoading) {
