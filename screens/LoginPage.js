@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, TextInput, View, Button } from 'react-native';
-import firebase from '../config/firebase';
+import { firebase } from '../config/firebase';
 import { colors } from '../theme/index';
 
 export default class LoginPage extends React.Component {

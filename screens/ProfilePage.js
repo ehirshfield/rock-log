@@ -1,7 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, ActivityIndicator, Image } from 'react-native';
-import { firestore } from '../config/firebase';
-import firebase from '../config/firebase';
+import { firestore, firebase } from '../config/firebase';
 import { colors } from '../theme';
 import ClimbButton from '../components/ClimbButton';
 
@@ -14,6 +13,7 @@ export default class ProfilePage extends React.Component {
 			isLoading: true,
 			errorMessage: null
 		};
+		this.handleSignOut = this.handleSignOut.bind(this);
 	}
 
 	handleSignOut() {
@@ -22,7 +22,7 @@ export default class ProfilePage extends React.Component {
 			.signOut()
 			.then(() => {
 				console.log('signout successful!');
-				this.props.navigation.navigate('LoginPage');
+				//this.props.navigation.navigate('StartUpPage');
 			})
 			.catch(error => {
 				this.setState({ errorMessage: error.message });
@@ -52,7 +52,7 @@ export default class ProfilePage extends React.Component {
 	}
 
 	render() {
-		const { firstName, email, nickname } = this.state.user;
+		const { name, email, nickname } = this.state.user;
 		if (this.state.isLoading) {
 			return (
 				<View style={styles.activity}>
@@ -78,7 +78,7 @@ export default class ProfilePage extends React.Component {
 					resizeMode='contain'
 				/> */}
 				<Text>Profile Page!</Text>
-				<Text>{firstName ? firstName : nickname}</Text>
+				<Text>{name ? name : nickname}</Text>
 				<Text>{email}</Text>
 				<ClimbButton
 					color={colors.signoutButton}
