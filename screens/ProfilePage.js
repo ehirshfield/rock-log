@@ -52,7 +52,7 @@ export default class ProfilePage extends React.Component {
 	}
 
 	render() {
-		const { firstName, email, nickname } = this.state.user;
+		const { name, email, nickname } = this.state.user;
 		if (this.state.isLoading) {
 			return (
 				<View style={styles.activity}>
@@ -78,7 +78,7 @@ export default class ProfilePage extends React.Component {
 					resizeMode='contain'
 				/> */}
 				<Text>Profile Page!</Text>
-				<Text>{firstName ? firstName : nickname}</Text>
+				<Text>{name ? name : nickname}</Text>
 				<Text>{email}</Text>
 				<ClimbButton
 					color={colors.signoutButton}

@@ -14,7 +14,7 @@ export default class ClimbList extends React.Component {
 		this.ref = firestore
 			.collection('climbs')
 			.where('userId', '==', this.userId);
-		this.curious = null;
+		this.climbListener = null;
 		this.state = {
 			isLoading: true,
 			climbs: []
@@ -50,13 +50,21 @@ export default class ClimbList extends React.Component {
 	}
 
 	componentDidMount() {
-		this.curious = this.ref.onSnapshot(this.onCollectionUpdate);
+		this.climbListener = this.ref.onSnapshot(
+			this.onCollectionUpdate,
+			error => {
+				if (
+					error
+						.toString()
+						.includes('Missing or insufficient permissions.')
+				) {
+					console.log('Detached climb listener!');
+				} else {
+					console.error('error :', error);
+				}
+			}
+		);
 	}
-
-	//UNMOUNT LISTNER
-	// componentWillUnmount() {
-	// 	this.curious.off();
-	// }
 
 	render() {
 		if (this.state.isLoading) {

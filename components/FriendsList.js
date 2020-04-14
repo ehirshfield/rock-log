@@ -2,7 +2,7 @@ import { StyleSheet, Text, FlatList, View, SafeAreaView } from 'react-native';
 import React from 'react';
 import { colors } from '../theme';
 import RemoveButton from './RemoveButton';
-import { firestore, firebase } from '../config/firebase';
+import { firestore } from '../config/firebase';
 
 export default class FriendsList extends React.Component {
 	constructor() {
@@ -10,25 +10,18 @@ export default class FriendsList extends React.Component {
 		this.handleRemoveUser = this.handleRemoveUser.bind(this);
 	}
 
-	handleRemoveUser(id, name) {
-		const userRef = firestore
+	handleRemoveUser(deleteId, friends) {
+		firestore
 			.collection('users')
-			.where('email', '==', this.userEmail);
-		userRef
+			.doc(this.props.userId)
 			.update({
-				friends: firebase.firestore.FieldValue.arrayRemove({
-					id,
-					name
-				})
+				friends: friends.filter(friend => friend.id !== deleteId)
 			})
 			.then(() => {
 				console.log('Removed friend!');
 			})
 			.catch(error => {
-				this.setState({
-					errorMessage: error.message
-				});
-				console.log('error :', error);
+				console.error(error);
 			});
 	}
 
@@ -45,10 +38,12 @@ export default class FriendsList extends React.Component {
 								color={colors.buttonPrimaryBg}
 								title='Remove'
 								small={true}
-								onPress={this.handleRemoveUser(
-									item.id,
-									item.name
-								)}
+								onPress={() => {
+									this.handleRemoveUser(
+										item.id,
+										this.props.friends
+									);
+								}}
 							/>
 						</View>
 					)}

@@ -32,3 +32,4 @@ if (!initFirebase.apps.length) {
 
 export const firestore = initFirebase.firestore();
 export const firebase = initFirebase.app();
+export const firebaseModule = initFirebase;
