@@ -108,6 +108,6 @@ const styles = StyleSheet.create({
 		bottom: 0,
 		alignItems: 'center',
 		justifyContent: 'center',
-		backgroundColor: colors.background
+		backgroundColor: colors.backgroundColors.generalBackground
 	}
 });

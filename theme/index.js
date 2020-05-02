@@ -17,12 +17,18 @@ const palette = {
 	light_black: '#2b2c35'
 };
 export const colors = {
-	paragraphText: palette.white,
 	buttonPrimaryBg: palette.white,
 	headingText: palette.white,
-	background: palette.light_black,
-	climbBackground: palette.vice_grey,
 	ratingButtons: palette.neon_blue,
 	startingClimbButton: palette.neon_pink,
-	signoutButton: palette.vice_blue
+	signoutButton: palette.vice_blue,
+	textColors: {
+		generalText: palette.white,
+		paragraphText: palette.white
+	},
+	backgroundColors: {
+		generalBackground: palette.light_black,
+		inputBackground: palette.white,
+		climbBackground: palette.vice_grey
+	}
 };

@@ -1,52 +1,30 @@
 import React from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import { View, StyleSheet, Text, FlatList } from 'react-native';
 import RatingButton from './RatingButton';
 import ClimbButton from './ClimbButton';
 import ClimbTimer from './ClimbTimer';
 import moment from 'moment';
-import { firestore } from '../config/firebase';
+import { firestore, firebase } from '../config/firebase';
 import { calculateHighestDifficulty } from '../utils/common';
+import SingleClimb from './SingleClimb';
 
 let time;
 
 export default class CurrentClimb extends React.Component {
 	constructor(props) {
 		super(props);
+		this.userId = firebase.auth().currentUser.uid || null;
 		this.state = {
-			hours: 0,
-			minutes: 0,
-			seconds: 0,
-			isPaused: false,
-			climbs: []
+			climbs: [],
+			singleClimb: false,
+			singleClimbRating: '',
+			runningTime: 0,
+			status: false,
 		};
-		this.startTimer = this.startTimer.bind(this);
 		this.finishClimbing = this.finishClimbing.bind(this);
-		this.pauseClimbing = this.pauseClimbing.bind(this);
-		this.resumeClimbing = this.resumeClimbing.bind(this);
 		this.logRating = this.logRating.bind(this);
-	}
-
-	startTimer() {
-		let { seconds, minutes, hours } = this.state;
-		seconds++;
-		if (seconds >= 60) {
-			seconds = 0;
-			minutes++;
-			if (minutes >= 60) {
-				minutes = 0;
-				hours++;
-			}
-		}
-		this.setState({
-			seconds,
-			minutes,
-			hours
-		});
-		this.timer();
-	}
-
-	timer() {
-		time = setTimeout(this.startTimer, 1000);
+		this.moveToSingleClimb = this.moveToSingleClimb.bind(this);
+		this.exitSingleClimb = this.exitSingleClimb.bind(this);
 	}
 
 	generateRatings(maxRating) {
@@ -60,7 +38,7 @@ export default class CurrentClimb extends React.Component {
 					<RatingButton
 						key={index}
 						title={item}
-						onPress={() => this.logRating(item)}
+						onPress={() => this.moveToSingleClimb(item)}
 						largeRating
 					/>
 				);
@@ -69,93 +47,133 @@ export default class CurrentClimb extends React.Component {
 					<RatingButton
 						key={index}
 						title={item}
-						onPress={() => this.logRating(item)}
+						onPress={() => this.moveToSingleClimb(item)}
 					/>
 				);
 			}
 		});
 	}
 
-	logRating(rating) {
-		const climbs = this.state.climbs;
-		climbs.push(rating);
+	moveToSingleClimb(rating) {
 		this.setState({
-			climbs
+			singleClimb: true,
+			singleClimbRating: rating,
 		});
 	}
 
-	componentDidMount() {
-		time = setTimeout(this.startTimer, 1000);
+	exitSingleClimb() {
+		this.setState({
+			singleClimb: false,
+		});
+	}
+
+	logRating(rating, time) {
+		const climbs = this.state.climbs;
+		climbs.push({
+			difficulty: rating,
+			time: time,
+		});
+		this.setState({
+			climbs,
+		});
 	}
 
 	finishClimbing() {
-		const { climbs, hours, minutes, seconds } = this.state;
-		clearTimeout(time);
-		const highest = calculateHighestDifficulty(climbs);
-		firestore.collection('climbs').add({
-			date: moment().format('MM/DD/YYYY'),
-			highestDifficulty: 'V' + highest,
-			hours: hours,
-			minutes: minutes,
-			seconds: seconds,
-			total: climbs.length
-		});
+		const { climbs, runningTime } = this.state;
+		clearInterval(this.timer);
+		if (climbs.length > 0) {
+			const highest = calculateHighestDifficulty(climbs);
+			firestore.collection('climbs').add({
+				date: moment().format('MM/DD/YYYY'),
+				highestDifficulty: 'V' + highest,
+				time: runningTime,
+				total: climbs.length,
+				userId: this.userId,
+				singleClimbs: climbs,
+			});
+		}
+
+		this.props.onFormClose();
+		this.props.toggleClimbList(false);
 	}
 
-	pauseClimbing() {
-		clearTimeout(time);
-		this.setState({
-			isPaused: true
+	handleClimbTime = () => {
+		this.setState((state) => {
+			if (state.status) {
+				clearInterval(this.timer);
+			} else {
+				const startTime = Date.now() - this.state.runningTime;
+				this.timer = setInterval(() => {
+					this.setState({ runningTime: Date.now() - startTime });
+				});
+			}
+			return { status: !state.status };
 		});
+	};
+
+	handleReset = () => {
+		clearInterval(this.timer);
+		this.setState({ runningTime: 0, status: false });
+	};
+
+	componentDidMount() {
+		this.handleClimbTime();
 	}
 
-	resumeClimbing() {
-		this.startTimer();
-		this.setState({
-			isPaused: false
-		});
+	componentWillUnmount() {
+		clearInterval(this.timer);
 	}
 
 	render() {
-		const climbRatings = this.generateRatings(12);
-		const { isPaused } = this.state;
+		const climbRatings = this.generateRatings(13);
+		const { status } = this.state;
 		return (
 			<View style={styles.currentClimbContainer}>
-				<View style={styles.ratingContainer}>{climbRatings}</View>
+				{this.state.singleClimb ? (
+					<View>
+						<SingleClimb
+							logRating={this.logRating}
+							singleClimbRating={this.state.singleClimbRating}
+							handleClimbTime={this.handleClimbTime}
+							exitSingleClimb={this.exitSingleClimb}
+						/>
+					</View>
+				) : (
+					<View>
+						<View style={styles.ratingContainer}>
+							{climbRatings}
+						</View>
 
-				<ClimbTimer
-					hours={this.state.hours}
-					minutes={this.state.minutes}
-					seconds={this.state.seconds}
-				/>
-				<View style={styles.endSessionButtonContainer}>
-					{isPaused ? (
-						<ClimbButton
-							title='Resume Climbing'
-							onPress={() => {
-								this.resumeClimbing();
-							}}
-							color='green'
-						/>
-					) : (
-						<ClimbButton
-							title='Pause Climbing'
-							onPress={() => {
-								this.pauseClimbing();
-							}}
-							color='red'
-						/>
-					)}
-				</View>
-				<View style={styles.endSessionButtonContainer}>
-					<ClimbButton
-						title='Finished Climbing'
-						onPress={() => {
-							this.finishClimbing();
-							this.props.onFormClose();
-						}}
-					/>
-				</View>
+						<ClimbTimer time={this.state.runningTime} />
+						<View style={styles.endSessionButtonContainer}>
+							{!status ? (
+								<ClimbButton
+									title='Resume Climbing'
+									onPress={() => {
+										this.handleClimbTime();
+									}}
+									color='green'
+								/>
+							) : (
+								<ClimbButton
+									title='Pause Climbing'
+									onPress={() => {
+										this.handleClimbTime();
+									}}
+									color='red'
+								/>
+							)}
+						</View>
+						<View style={styles.endSessionButtonContainer}>
+							<ClimbButton
+								title='Finished Climbing'
+								onPress={() => {
+									this.finishClimbing();
+								}}
+							/>
+						</View>
+					</View>
+				)}
 			</View>
 		);
 	}
@@ -164,18 +182,15 @@ export default class CurrentClimb extends React.Component {
 const styles = StyleSheet.create({
 	currentClimbContainer: {
 		flexDirection: 'column',
-		borderColor: '#d6d7da',
-		borderWidth: 2,
-		borderRadius: 10
 	},
 	ratingContainer: {
 		flexDirection: 'row',
 		flexWrap: 'wrap',
 		justifyContent: 'space-around',
-		alignContent: 'flex-start'
+		alignContent: 'flex-start',
 	},
 	endSessionButtonContainer: {
 		padding: 10,
-		margin: 10
-	}
+		margin: 10,
+	},
 });

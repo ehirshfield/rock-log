@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TextInput } from 'react-native';
 import FriendsList from '../components/FriendsList';
 import { colors } from '../theme';
 import { firestore, firebase } from '../config/firebase';
@@ -15,7 +15,9 @@ export default class FriendsPage extends React.Component {
 			friends: [],
 			isLoading: true,
 			errorMessage: null,
-			userId: ''
+			userId: '',
+			email: '',
+			pendingFriends: []
 		};
 		this.onCollectionUpdate = this.onCollectionUpdate.bind(this);
 	}
@@ -25,29 +27,51 @@ export default class FriendsPage extends React.Component {
 			this.setState({
 				friends: doc.data().friends,
 				isLoading: false,
-				userId: doc.id
+				userId: doc.id,
+				pendingFriends: doc.data().pendingFriends
 			});
 		});
 	}
 
-	async handleAddFriend(friendEmail, friends) {
+	async handleAddFriend(friendEmail, currentFriendsList) {
+		// Check to see if friend already has invite or is a friend
+		if (currentFriendsList.find(user => user.email === friendEmail)) {
+			console.log('Friend already or already requested');
+			return this.setState({
+				email: ''
+			});
+		}
+
+		// Add user to pending friends list
 		const friend = await this.usersRef
 			.where('email', '==', friendEmail)
 			.get();
 		if (!friend.empty) {
 			const snapshot = friend.docs[0];
 			const friendId = snapshot.id;
-			const { name } = snapshot.data();
-			friends.push({ id: friendId, name });
-			try {
-				this.usersRef.doc(this.state.userId).update({
-					friends
+			const { name, pendingFriends } = snapshot.data();
+
+			if (pendingFriends.find(user => user.email === friendEmail)) {
+				console.log('Friend already or already requested');
+				return this.setState({
+					email: ''
 				});
-			} catch (error) {
-				console.error('Error updating friends list :', error);
+			} else {
+				pendingFriends.push({ id: friendId, name });
+				try {
+					await this.usersRef.doc(friendId).update({
+						pendingFriends: pendingFriends
+					});
+					return this.setState({
+						email: ''
+					});
+				} catch (error) {
+					console.error('Error updating friends list :', error);
+				}
 			}
 		} else {
-			console.error('Could not find friend');
+			console.log('Could not find friend');
+			// Maybe handle a message that says Sent! even if it fails
 		}
 	}
 
@@ -70,24 +94,45 @@ export default class FriendsPage extends React.Component {
 	render() {
 		return (
 			<View style={styles.container}>
-				<View style={styles.header}>
-					<Text>Friends Page!</Text>
+				<View stlyle={styles.headerContainer}>
+					<Text style={styles.header}>Friends Page!</Text>
+				</View>
+				<View style={styles.addFriendRow}>
+					<TextInput
+						style={styles.textInput}
+						autoCapitalize='none'
+						placeholder='Email'
+						onChangeText={email => this.setState({ email })}
+						value={this.state.email}
+					/>
 					<ClimbButton
 						title='Add Friend'
 						onPress={() => {
 							this.handleAddFriend(
-								'rnfjkfrnw@yahool.com',
+								this.state.email,
 								this.state.friends
 							);
 						}}
 						color='red'
 					/>
 				</View>
-
-				<FriendsList
-					friends={this.state.friends}
-					userId={this.state.userId}
-				/>
+				<View style={styles.friendsContainer}>
+					<View style={styles.pendingFriendList}>
+						<FriendsList
+							friends={this.state.pendingFriends}
+							userId={this.state.userId}
+							title='Pending Friends'
+							pendingFriendsList
+						/>
+					</View>
+					<View style={styles.friendList}>
+						<FriendsList
+							friends={this.state.friends}
+							userId={this.state.userId}
+							title='Friends'
+						/>
+					</View>
+				</View>
 			</View>
 		);
 	}
@@ -96,11 +141,40 @@ export default class FriendsPage extends React.Component {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: colors.background
+		backgroundColor: colors.backgroundColors.generalBackground,
+		flexDirection: 'column'
+	},
+	headerContainer: {
+		flex: 1
 	},
 	header: {
-		paddingTop: 145,
-		color: colors.paragraphText,
-		flexDirection: 'row'
+		paddingTop: 80,
+		color: colors.headingText,
+		textAlign: 'center'
+	},
+	addFriendRow: {
+		paddingTop: 55,
+		color: colors.textColors.paragraphText,
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		paddingHorizontal: 15,
+		flex: 1
+	},
+	textInput: {
+		height: 40,
+		width: '65%',
+		borderColor: 'gray',
+		borderWidth: 1,
+		marginTop: 8,
+		backgroundColor: colors.headingText
+	},
+	pendingFriendList: {
+		flex: 1
+	},
+	friendList: {
+		flex: 1
+	},
+	friendsContainer: {
+		flex: 3
 	}
 });

@@ -29,7 +29,8 @@ export default class App extends React.Component {
 						initialRouteName='StartUpPage'
 						screenOptions={{
 							headerStyle: {
-								backgroundColor: colors.background
+								backgroundColor:
+									colors.backgroundColors.generalBackground
 							},
 							headerTintColor: colors.headingText,
 							headerTitleStyle: {
@@ -106,7 +107,7 @@ function MainApp() {
 				activeTintColor: colors.startingClimbButton,
 				inactiveTintColor: 'gray',
 				style: {
-					backgroundColor: colors.background,
+					backgroundColor: colors.backgroundColors.generalBackground,
 					borderTopColor: 'transparent'
 				}
 			}}

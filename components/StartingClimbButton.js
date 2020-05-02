@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
 		minWidth: 100,
 		borderWidth: 2,
 		borderRadius: 10,
-		backgroundColor: colors.background
+		backgroundColor: colors.backgroundColors.generalBackground
 	},
 	buttonText: {
 		textAlign: 'center',

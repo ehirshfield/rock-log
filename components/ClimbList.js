@@ -17,42 +17,35 @@ export default class ClimbList extends React.Component {
 		this.climbListener = null;
 		this.state = {
 			isLoading: true,
-			climbs: []
+			climbs: [],
+			hideList: false,
 		};
 		this.onCollectionUpdate = this.onCollectionUpdate.bind(this);
+		this.toggleClimbList = this.toggleClimbList.bind(this);
 	}
 
 	onCollectionUpdate(querySnapshot) {
 		const climbs = [];
-		querySnapshot.forEach(doc => {
-			const {
-				date,
-				highestDifficulty,
-				hours,
-				minutes,
-				seconds,
-				total
-			} = doc.data();
+		querySnapshot.forEach((doc) => {
+			const { date, highestDifficulty, time, total } = doc.data();
 			climbs.push({
 				key: doc.id,
 				date,
 				highestDifficulty,
-				hours,
-				minutes,
-				seconds,
-				total
+				time,
+				total,
 			});
 		});
 		this.setState({
 			climbs,
-			isLoading: false
+			isLoading: false,
 		});
 	}
 
 	componentDidMount() {
 		this.climbListener = this.ref.onSnapshot(
 			this.onCollectionUpdate,
-			error => {
+			(error) => {
 				if (
 					error
 						.toString()
@@ -66,6 +59,12 @@ export default class ClimbList extends React.Component {
 		);
 	}
 
+	toggleClimbList(status) {
+		this.setState({
+			hideList: status,
+		});
+	}
+
 	render() {
 		if (this.state.isLoading) {
 			return (
@@ -76,18 +75,19 @@ export default class ClimbList extends React.Component {
 		}
 		return (
 			<View>
-				<StartingClimbToggle />
-				{this.state.climbs.map((climb, index) => {
-					return (
-						<ClimbForm
-							key={index}
-							date={climb.date}
-							total={climb.total}
-							highestDiff={climb.highestDifficulty}
-							time={climb.minutes}
-						/>
-					);
-				})}
+				<StartingClimbToggle toggleClimbList={this.toggleClimbList} />
+				{!this.state.hideList &&
+					this.state.climbs.map((climb, index) => {
+						return (
+							<ClimbForm
+								key={index}
+								date={climb.date}
+								total={climb.total}
+								highestDiff={climb.highestDifficulty}
+								time={climb.time}
+							/>
+						);
+					})}
 			</View>
 		);
 	}
@@ -101,6 +101,6 @@ const styles = StyleSheet.create({
 		top: 0,
 		bottom: 0,
 		alignItems: 'center',
-		justifyContent: 'center'
-	}
+		justifyContent: 'center',
+	},
 });
