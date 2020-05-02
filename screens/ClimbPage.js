@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-	StyleSheet,
-	Text,
-	View,
-	ScrollView,
-	SafeAreaView,
-	TouchableOpacity
-} from 'react-native';
+import { StyleSheet, View, ScrollView, SafeAreaView } from 'react-native';
 import { colors } from '../theme/index';
 
 import ClimbList from '../components/ClimbList';
@@ -29,19 +22,19 @@ const styles = StyleSheet.create({
 	title: {
 		fontSize: 18,
 		fontWeight: 'bold',
-		textAlign: 'center'
+		textAlign: 'center',
 	},
 	container: {
-		flex: 1
+		flex: 1,
 	},
 	main: {
 		flex: 1,
-		backgroundColor: colors.background
+		backgroundColor: colors.backgroundColors.generalBackground,
 	},
 	scrollContainer: {
-		flexGrow: 1
+		flexGrow: 1,
 	},
 	climbList: {
-		flex: 1
-	}
+		flex: 1,
+	},
 });

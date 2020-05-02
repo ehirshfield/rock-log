@@ -25,13 +25,17 @@ export default class StartingClimbToggle extends React.Component {
 		return (
 			<View style={styles.formContainer}>
 				{isOpen ? (
-					<CurrentClimb onFormClose={() => this.handleFormClose()} />
+					<CurrentClimb
+						onFormClose={() => this.handleFormClose()}
+						toggleClimbList={this.props.toggleClimbList}
+					/>
 				) : (
 					<StartingClimbButton
 						color={colors.startingClimbButton}
 						title='Start Climbing Session'
 						onPress={() => {
 							this.handleCurrentClimbOpen();
+							this.props.toggleClimbList(true);
 						}}
 					/>
 				)}
@@ -42,8 +46,8 @@ export default class StartingClimbToggle extends React.Component {
 
 const styles = StyleSheet.create({
 	formContainer: {
-		backgroundColor: colors.background,
-		borderColor: colors.background,
+		backgroundColor: colors.backgroundColors.generalBackground,
+		borderColor: colors.backgroundColors.generalBackground,
 		borderWidth: 2,
 		borderRadius: 10,
 		marginRight: 15,

@@ -27,7 +27,7 @@ export default function ClimbForm({ date, total, time, highestDiff }) {
 
 const styles = StyleSheet.create({
 	formContainer: {
-		backgroundColor: colors.background,
+		backgroundColor: colors.backgroundColors.generalBackground,
 		borderColor: '#d6d7da',
 		borderWidth: 2,
 		borderRadius: 10,
@@ -56,9 +56,9 @@ const styles = StyleSheet.create({
 	},
 	largeText: {
 		fontSize: 100,
-		color: colors.paragraphText
+		color: colors.textColors.paragraphText
 	},
 	normalText: {
-		color: colors.paragraphText
+		color: colors.textColors.paragraphText
 	}
 });

@@ -24,13 +24,7 @@ const styles = StyleSheet.create({
 	button: {
 		marginTop: 10,
 		width: 135,
-		borderRadius: 5,
-		alignItems: 'center',
-		backgroundColor: colors.ratingButtons,
-		shadowColor: colors.ratingButtons,
-		shadowOpacity: 0.3,
-		shadowOffset: { height: 10, width: 0 },
-		shadowRadius: 20
+		backgroundColor: colors.textColors.generalText
 	},
 	buttonText: {
 		textAlign: 'center',
