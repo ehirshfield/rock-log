@@ -14,7 +14,10 @@ const palette = {
 	neon_purple: '#d087ff',
 	neon_blue: '#56fbff',
 	neon_green: '#66ff4b',
-	light_black: '#2b2c35'
+	light_black: '#2b2c35',
+	grey: '#404149',
+	light_grey: '#6a6b71',
+	lighter_grey: '#95959a',
 };
 export const colors = {
 	buttonPrimaryBg: palette.white,
@@ -24,11 +27,13 @@ export const colors = {
 	signoutButton: palette.vice_blue,
 	textColors: {
 		generalText: palette.white,
-		paragraphText: palette.white
+		paragraphText: palette.white,
 	},
 	backgroundColors: {
 		generalBackground: palette.light_black,
+		generalBackgroundGrey: palette.grey,
+		generalBackgroundGreyLighter: palette.lighter_grey,
 		inputBackground: palette.white,
-		climbBackground: palette.vice_grey
-	}
+		climbBackground: palette.vice_grey,
+	},
 };

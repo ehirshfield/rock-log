@@ -30,12 +30,12 @@ export default class App extends React.Component {
 						screenOptions={{
 							headerStyle: {
 								backgroundColor:
-									colors.backgroundColors.generalBackground
+									colors.backgroundColors.generalBackground,
 							},
 							headerTintColor: colors.headingText,
 							headerTitleStyle: {
-								fontWeight: 'bold'
-							}
+								fontWeight: 'bold',
+							},
 						}}
 					>
 						<Stack.Screen
@@ -68,8 +68,8 @@ const styles = StyleSheet.create({
 		marginTop:
 			Platform.OS === 'android' || platformVersion < 11
 				? Constants.statusBarHeight
-				: 0
-	}
+				: 0,
+	},
 });
 
 function MainApp() {
@@ -97,19 +97,19 @@ function MainApp() {
 							style={{
 								top: 5,
 								justifyContent: 'center',
-								alignItems: 'center'
+								alignItems: 'center',
 							}}
 						/>
 					);
-				}
+				},
 			})}
 			tabBarOptions={{
 				activeTintColor: colors.startingClimbButton,
 				inactiveTintColor: 'gray',
 				style: {
 					backgroundColor: colors.backgroundColors.generalBackground,
-					borderTopColor: 'transparent'
-				}
+					borderTopColor: 'transparent',
+				},
 			}}
 		>
 			<Tab.Screen

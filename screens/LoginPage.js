@@ -4,14 +4,21 @@ import {
 	Text,
 	View,
 	Button,
-	KeyboardAvoidingView
+	KeyboardAvoidingView,
 } from 'react-native';
 import { firebase } from '../config/firebase';
 import { colors } from '../theme/index';
 import TextInput from '../components/TextInput';
 
 export default class LoginPage extends React.Component {
-	state = { email: '', password: '', errorMessage: null };
+	constructor() {
+		super();
+		this.state = {
+			email: '',
+			password: '',
+			errorMessage: null,
+		};
+	}
 
 	handleLogin = () => {
 		const { email, password } = this.state;
@@ -19,7 +26,7 @@ export default class LoginPage extends React.Component {
 			.auth()
 			.signInWithEmailAndPassword(email, password)
 			.then(() => this.props.navigation.navigate('MainApp'))
-			.catch(error => this.setState({ errorMessage: error.message }));
+			.catch((error) => this.setState({ errorMessage: error.message }));
 	};
 
 	render() {
@@ -40,14 +47,14 @@ export default class LoginPage extends React.Component {
 				>
 					<TextInput
 						placeholder='Email'
-						onChangeText={email => this.setState({ email })}
+						onChangeText={(email) => this.setState({ email })}
 						value={this.state.email}
 						title='Email'
 						icon='email-outline'
 					/>
 					<TextInput
 						placeholder='Password'
-						onChangeText={password => this.setState({ password })}
+						onChangeText={(password) => this.setState({ password })}
 						value={this.state.password}
 						title='Password'
 						icon='lock-outline'
@@ -72,11 +79,11 @@ export default class LoginPage extends React.Component {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: colors.backgroundColors.generalBackground
+		backgroundColor: colors.backgroundColors.generalBackground,
 	},
 	header: {
 		color: colors.textColors.generalText,
-		fontSize: 100
+		fontSize: 100,
 	},
 	textInput: {
 		height: 50,
@@ -84,20 +91,20 @@ const styles = StyleSheet.create({
 		borderColor: 'gray',
 		borderWidth: 1,
 		marginTop: 8,
-		backgroundColor: colors.backgroundColors.inputBackground
+		backgroundColor: colors.backgroundColors.inputBackground,
 	},
 	logoContainer: {
 		flex: 4,
 		justifyContent: 'center',
-		alignItems: 'center'
+		alignItems: 'center',
 	},
 	inputContainer: {
 		flex: 2,
 		flexDirection: 'column',
 		justifyContent: 'center',
-		alignItems: 'center'
+		alignItems: 'center',
 	},
 	buttonContainer: {
-		flex: 2
-	}
+		flex: 2,
+	},
 });
