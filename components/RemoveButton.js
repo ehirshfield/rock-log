@@ -11,7 +11,7 @@ export default function RemoveButton({ color, title, small, onPress }) {
 				style={[
 					styles.buttonText,
 					small ? styles.small : styles.large,
-					{ color }
+					{ color },
 				]}
 			>
 				{title}
@@ -22,21 +22,24 @@ export default function RemoveButton({ color, title, small, onPress }) {
 
 const styles = StyleSheet.create({
 	button: {
+		height: 40,
 		marginTop: 10,
+		marginRight: 10,
 		minWidth: 100,
 		borderWidth: 2,
-		borderRadius: 3
+		borderRadius: 3,
+		justifyContent: 'center',
 	},
 	buttonText: {
 		textAlign: 'center',
-		fontWeight: 'bold'
+		fontWeight: 'bold',
 	},
 	small: {
 		fontSize: 14,
-		padding: 5
+		padding: 5,
 	},
 	large: {
 		fontSize: 16,
-		padding: 10
-	}
+		padding: 10,
+	},
 });
