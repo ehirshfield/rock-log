@@ -2,7 +2,17 @@ import { StyleSheet, Text, FlatList, View, SafeAreaView } from 'react-native';
 import React from 'react';
 import { colors } from '../theme';
 import { firestore } from '../config/firebase';
-import RemoveButton from './RemoveButton';
+import GenericButton from './common/GenericButton';
+import moment from 'moment';
+
+const categoryScores = [
+	{ category: 'Flashes', weight: 300, tie: 150 },
+	{ category: 'Attempts', weight: 150, tie: 50 },
+	{ category: 'Sends', weight: 200, tie: 100 },
+	{ category: 'SARatio', weight: 200, tie: 100 },
+	{ category: 'HighestDiff', weight: 200, tie: 100 },
+	{ category: 'Custom', weight: 100, tie: 50 },
+];
 
 export default class CurrentChallenge extends React.Component {
 	constructor() {
@@ -16,54 +26,148 @@ export default class CurrentChallenge extends React.Component {
 				'S/A Ratio',
 				'Workout Time',
 			],
+
+			challengerScore: 0,
+			inviteeScore: 0,
 		};
 		this.renderCategories = this.renderCategories.bind(this);
 	}
 
-	async renderCategories() {
-		// call for todays climbs for each user and see if they can contribute to stats
-		// OK if null
-
-		// const user = await firestore
-		// 	.collection('climbs')
-		// 	.where('email', '==', this.props.userEmail)
-		// 	.get();
-
-		// if (!user.empty) {
-		// 	const snapshot = user.docs[0];
-		// 	const { friends } = snapshot.data();
-		// 	await this.setState({
-		// 		friends,
-		// 	});
-		// } else {
-		// 	console.log('Could not find user');
+	calculateScore() {
+		// let challengerScore = 0;
+		// let inviteeScore = 0;
+		// const curr = this.state.currentChallenge;
+		// for (let score of categoryScores) {
+		// 	if (typeof curr.challenger[score.category] !== 'undefined') {
+		// 		if (
+		// 			curr.challenger[score.category] >
+		// 			curr.invitee[score.category]
+		// 		) {
+		// 			challengerScore += score.weight;
+		// 		} else if (
+		// 			curr.challenger[score.category] <
+		// 			curr.invitee[score.category]
+		// 		) {
+		// 			inviteeScore += score.weight;
+		// 		} else {
+		// 			challengerScore += score.tie;
+		// 			inviteeScore += score.tie;
+		// 		}
+		// 	}
 		// }
-
-		// Set object for state
-
-		const challenge = {
-			challenger: {
-				Flashes: 4,
-				Attempts: 30,
-				Sends: 13,
-				'S/A Ratio': 0.45,
-				'Workout Time': 12645971,
-			},
-			invitee: {
-				Flashes: 4,
-				Attempts: 30,
-				Sends: 13,
-				'S/A Ratio': 0.45,
-				'Workout Time': 12645971,
-			},
-		};
+		// this.setState({
+		// 	challengerScore: challengerScore,
+		// 	inviteeScore: inviteeScore,
+		// });
 	}
 
-	componentDidMount() {
-		this.renderCategories();
+	async renderCategories() {
+		// Call for todays climbs for each user and see if they can contribute to stats
+		// OK if null
+		const challenge = {
+			challenger: {
+				Flashes: 0,
+				Attempts: 0,
+				Sends: 0,
+				SARatio: 0,
+				HighestDiff: 0,
+			},
+			invitee: {
+				Flashes: 0,
+				Attempts: 0,
+				Sends: 0,
+				SARatio: 0,
+				HighestDiff: 0,
+			},
+		};
+
+		//Is the user the invitee or challenger?
+		const userRole =
+			this.props.currentChallenge.challengerEmail === this.props.userEmail
+				? 'challenger'
+				: 'invitee';
+
+		const opponentRole =
+			userRole === 'challenger' ? 'invitee' : 'challenger';
+
+		const opponentEmail =
+			this.props.currentChallenge.challengerEmail === this.props.userEmail
+				? this.props.currentChallenge.inviteeEmail
+				: this.props.currentChallenge.challengerEmail;
+
+		// Get user climbs
+		const userClimbs = await firestore
+			.collection('climbs')
+			.where('email', '==', this.props.userEmail)
+			.get();
+
+		// Store today's highest stats
+		if (!userClimbs.empty) {
+			for (let climb of userClimbs.docs) {
+				if (climb.data().date === moment().format('MM/DD/YYYY')) {
+					let climbObj = climb.data();
+					for (let datapoint in climbObj) {
+						if (datapoint === 'highestDifficulty') {
+							challenge[userRole].HighestDiff = datapoint;
+						} else if (datapoint > challenge[userRole][datapoint]) {
+							challenge[userRole][datapoint] = datapoint;
+						}
+					}
+				}
+			}
+		} else {
+			console.log('Could not find user climbs');
+		}
+
+		// Get opponent climbs
+		const opponentClimbs = await firestore
+			.collection('climbs')
+			.where('email', '==', opponentEmail)
+			.get();
+
+		// Store opponent today's highest stats
+		if (!opponentClimbs.empty) {
+			for (let climb of opponentClimbs.docs) {
+				if (climb.data().date === moment().format('MM/DD/YYYY')) {
+					for (let datapoint of climb.data()) {
+						if (datapoint > challenge[opponentRole][datapoint]) {
+							challenge[opponentRole][datapoint] = datapoint;
+						}
+					}
+				}
+			}
+		} else {
+			console.log('Could not find opponent climbs');
+		}
+
+		const finalObj = [
+			{ category: 'Flashes', challenger: 300, invitee: 150 },
+			{ category: 'Attempts', challenger: 300, invitee: 150 },
+			{ category: 'Sends', challenger: 300, invitee: 150 },
+			{ category: 'SARatio', challenger: 300, invitee: 150 },
+			{ category: 'HighestDiff', challenger: 300, invitee: 150 },
+			{ category: 'Custom', challenger: 300, invitee: 150 },
+		];
+		this.setState({
+			currentChallenge: finalObj,
+		});
+	}
+
+	async componentDidMount() {
+		try {
+			await this.renderCategories();
+		} catch (error) {
+			console.log('error :>> ', error);
+		}
+		try {
+			await this.calculateScore();
+		} catch (error) {
+			console.log('error :>> ', error);
+		}
 	}
 
 	render() {
+		const currentChallenge = this.props.currentChallenge;
 		return (
 			<SafeAreaView style={styles.container}>
 				<View style={styles.titleContainer}>
@@ -72,15 +176,23 @@ export default class CurrentChallenge extends React.Component {
 				<View style={styles.scoreAndCategoryContainer}>
 					<View style={styles.scoreContainer}>
 						<View style={styles.scoreLeft}>
-							<Text style={styles.text}>USER ONE</Text>
-							<Text style={styles.text}>150</Text>
+							<Text style={styles.text}>
+								{currentChallenge.challengerName}
+							</Text>
+							<Text style={styles.text}>
+								{this.state.challengerScore}
+							</Text>
 						</View>
 						<View style={styles.scoreVS}>
 							<Text style={styles.text}>VS.</Text>
 						</View>
 						<View style={styles.scoreRight}>
-							<Text style={styles.text}>USER TWO</Text>
-							<Text style={styles.text}>550</Text>
+							<Text style={styles.text}>
+								{currentChallenge.inviteeName}
+							</Text>
+							<Text style={styles.text}>
+								{this.state.inviteeScore}
+							</Text>
 						</View>
 					</View>
 					<View style={styles.categoriesContainer}>
@@ -112,11 +224,11 @@ export default class CurrentChallenge extends React.Component {
 				</View>
 
 				<View style={styles.cancelButtonContainer}>
-					<RemoveButton
+					<GenericButton
 						color={colors.buttonPrimaryBg}
 						title='Cancel'
 						onPress={() => {
-							this.props.cancelChallenge();
+							this.props.cancelCurrentChallengePage();
 						}}
 					/>
 				</View>
@@ -139,6 +251,8 @@ const styles = StyleSheet.create({
 	},
 	cancelButtonContainer: {
 		flex: 1,
+		paddingTop: 20,
+		marginHorizontal: 10,
 	},
 	scoreAndCategoryContainer: {
 		flex: 5,
@@ -170,6 +284,7 @@ const styles = StyleSheet.create({
 	},
 	text: {
 		color: colors.textColors.paragraphText,
+		fontSize: 30,
 	},
 	item: {
 		padding: 10,
@@ -219,5 +334,6 @@ const styles = StyleSheet.create({
 	},
 	listText: {
 		fontSize: 30,
+		color: colors.textColors.paragraphText,
 	},
 });

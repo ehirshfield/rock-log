@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import ClimbTimer from './ClimbTimer';
 import ClimbButton from './ClimbButton';
+import { colors } from '../theme';
 
 export default class SingleClimb extends React.Component {
 	constructor(props) {
@@ -9,6 +10,7 @@ export default class SingleClimb extends React.Component {
 		this.state = {
 			runningTime: 0,
 			status: false,
+			attempts: 0,
 		};
 	}
 
@@ -31,19 +33,33 @@ export default class SingleClimb extends React.Component {
 		this.setState({ runningTime: 0, status: false });
 	};
 
+	handleAttempt = () => {
+		this.setState({
+			attempts: this.state.attempts + 1,
+		});
+	};
+
 	componentDidMount() {
 		this.handleClick();
 	}
 
 	componentWillUnmount() {
 		clearInterval(this.timer);
+		this.setState({
+			attempts: 0,
+		});
 	}
 
 	render() {
 		const { status } = this.state;
 		return (
 			<View style={styles.singleClimbContainer}>
-				<Text>Currently climbing {this.props.singleClimbRating}</Text>
+				<Text style={styles.currentClimbTitle}>
+					Currently climbing {this.props.singleClimbRating}
+				</Text>
+				<Text style={styles.currentClimbTitle}>
+					Attempts: {this.state.attempts}
+				</Text>
 				<ClimbTimer time={this.state.runningTime} />
 
 				<View>
@@ -74,8 +90,13 @@ export default class SingleClimb extends React.Component {
 							clearInterval(this.timer);
 							this.props.logRating(
 								this.props.singleClimbRating,
-								this.state.runningTime
+								this.state.runningTime,
+								this.state.attempts + 1,
+								true
 							);
+							this.setState({
+								attempts: 0,
+							});
 							this.props.exitSingleClimb();
 						}}
 						color='purple'
@@ -83,9 +104,27 @@ export default class SingleClimb extends React.Component {
 				</View>
 				<View>
 					<ClimbButton
+						title='Log Attempt'
+						onPress={() => {
+							this.handleAttempt();
+						}}
+						color='yellow'
+					/>
+				</View>
+				<View>
+					<ClimbButton
 						title='Give Up'
 						onPress={() => {
 							clearInterval(this.timer);
+							this.props.logRating(
+								this.props.singleClimbRating,
+								this.state.runningTime,
+								this.state.attempts,
+								false
+							);
+							this.setState({
+								attempts: 0,
+							});
 							this.props.exitSingleClimb();
 						}}
 						color='red'
@@ -99,5 +138,9 @@ export default class SingleClimb extends React.Component {
 const styles = StyleSheet.create({
 	singleClimbContainer: {
 		flex: 1,
+	},
+	currentClimbTitle: {
+		color: colors.textColors.generalText,
+		fontSize: 30,
 	},
 });

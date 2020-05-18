@@ -19,6 +19,7 @@ export default class ChallengePage extends React.Component {
 			challenges: [],
 			newChallenge: false,
 			currentChallenge: false,
+			currentChallengeObj: {},
 		};
 
 		this.onCollectionUpdate = this.onCollectionUpdate.bind(this);
@@ -89,9 +90,10 @@ export default class ChallengePage extends React.Component {
 		});
 	}
 
-	showCurrentChallenge() {
+	showCurrentChallenge(currentChallenge) {
 		this.setState({
 			currentChallenge: true,
+			currentChallengeObj: currentChallenge,
 		});
 	}
 
@@ -205,10 +207,12 @@ export default class ChallengePage extends React.Component {
 				<View style={styles.container}>
 					<View style={styles.newChallenge}>
 						<CurrentChallenge
+							currentChallenge={this.state.currentChallengeObj}
 							handleRemoveChallenge={this.handleRemoveChallenge}
 							cancelCurrentChallengePage={
 								this.cancelCurrentChallengePage
 							}
+							userEmail={this.userEmail}
 						/>
 					</View>
 				</View>

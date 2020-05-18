@@ -10,10 +10,10 @@ import { firestore, firebase } from '../config/firebase';
 export default class ClimbList extends React.Component {
 	constructor() {
 		super();
-		this.userId = firebase.auth().currentUser.uid || null;
+		this.userEmail = firebase.auth().currentUser.email || null;
 		this.ref = firestore
 			.collection('climbs')
-			.where('userId', '==', this.userId);
+			.where('email', '==', this.userEmail);
 		this.climbListener = null;
 		this.state = {
 			isLoading: true,
