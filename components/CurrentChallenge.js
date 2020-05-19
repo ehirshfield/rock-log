@@ -4,6 +4,7 @@ import { colors } from '../theme';
 import { firestore } from '../config/firebase';
 import GenericButton from './common/GenericButton';
 import moment from 'moment';
+import { pickHigherValue, roundToTwoDecimalPlaces } from '../utils/common';
 
 const categoryScores = [
 	{ category: 'Flashes', weight: 300, tie: 150 },
@@ -18,13 +19,13 @@ export default class CurrentChallenge extends React.Component {
 	constructor() {
 		super();
 		this.state = {
-			currentChallenge: {},
+			currentChallenge: [],
 			categories: [
 				'Flashes',
 				'Attempts',
 				'Sends',
 				'S/A Ratio',
-				'Workout Time',
+				'Highest Difficulty',
 			],
 
 			challengerScore: 0,
@@ -34,31 +35,27 @@ export default class CurrentChallenge extends React.Component {
 	}
 
 	calculateScore() {
-		// let challengerScore = 0;
-		// let inviteeScore = 0;
-		// const curr = this.state.currentChallenge;
-		// for (let score of categoryScores) {
-		// 	if (typeof curr.challenger[score.category] !== 'undefined') {
-		// 		if (
-		// 			curr.challenger[score.category] >
-		// 			curr.invitee[score.category]
-		// 		) {
-		// 			challengerScore += score.weight;
-		// 		} else if (
-		// 			curr.challenger[score.category] <
-		// 			curr.invitee[score.category]
-		// 		) {
-		// 			inviteeScore += score.weight;
-		// 		} else {
-		// 			challengerScore += score.tie;
-		// 			inviteeScore += score.tie;
-		// 		}
-		// 	}
-		// }
-		// this.setState({
-		// 	challengerScore: challengerScore,
-		// 	inviteeScore: inviteeScore,
-		// });
+		let challengerScore = 0;
+		let inviteeScore = 0;
+		const curr = this.state.currentChallenge;
+		for (let score of categoryScores) {
+			for (let row of curr) {
+				if (row.category === score.category) {
+					if (row.challenger > row.invitee) {
+						challengerScore += score.weight;
+					} else if (row.challenger < row.invitee) {
+						inviteeScore += score.weight;
+					} else {
+						challengerScore += score.tie;
+						inviteeScore += score.tie;
+					}
+				}
+			}
+		}
+		this.setState({
+			challengerScore: challengerScore,
+			inviteeScore: inviteeScore,
+		});
 	}
 
 	async renderCategories() {
@@ -66,18 +63,18 @@ export default class CurrentChallenge extends React.Component {
 		// OK if null
 		const challenge = {
 			challenger: {
-				Flashes: 0,
-				Attempts: 0,
-				Sends: 0,
+				flashes: 0,
+				attempts: 0,
+				sends: 0,
 				SARatio: 0,
-				HighestDiff: 0,
+				highestDiff: 0,
 			},
 			invitee: {
-				Flashes: 0,
-				Attempts: 0,
-				Sends: 0,
+				flashes: 0,
+				attempts: 0,
+				sends: 0,
 				SARatio: 0,
-				HighestDiff: 0,
+				highestDiff: 0,
 			},
 		};
 
@@ -108,13 +105,37 @@ export default class CurrentChallenge extends React.Component {
 					let climbObj = climb.data();
 					for (let datapoint in climbObj) {
 						if (datapoint === 'highestDifficulty') {
-							challenge[userRole].HighestDiff = datapoint;
-						} else if (datapoint > challenge[userRole][datapoint]) {
-							challenge[userRole][datapoint] = datapoint;
+							let highest = pickHigherValue(
+								challenge[userRole].highestDiff,
+								climbObj[datapoint]
+							);
+							challenge[userRole].highestDiff = highest;
+						} else if (datapoint === 'flashes') {
+							let highest = pickHigherValue(
+								challenge[userRole].flashes,
+								climbObj[datapoint]
+							);
+							challenge[userRole].flashes = highest;
+						} else if (datapoint === 'total') {
+							let highest = pickHigherValue(
+								challenge[userRole].attempts,
+								climbObj[datapoint]
+							);
+							challenge[userRole].attempts = highest;
+						} else if (datapoint === 'completed') {
+							let highest = pickHigherValue(
+								challenge[userRole].sends,
+								climbObj[datapoint]
+							);
+							challenge[userRole].sends = highest;
 						}
 					}
 				}
 			}
+
+			challenge[userRole].SARatio = roundToTwoDecimalPlaces(
+				challenge[userRole].sends / challenge[userRole].attempts
+			);
 		} else {
 			console.log('Could not find user climbs');
 		}
@@ -129,24 +150,75 @@ export default class CurrentChallenge extends React.Component {
 		if (!opponentClimbs.empty) {
 			for (let climb of opponentClimbs.docs) {
 				if (climb.data().date === moment().format('MM/DD/YYYY')) {
-					for (let datapoint of climb.data()) {
-						if (datapoint > challenge[opponentRole][datapoint]) {
-							challenge[opponentRole][datapoint] = datapoint;
+					let climbObj = climb.data();
+					for (let datapoint in climbObj) {
+						if (datapoint === 'highestDifficulty') {
+							let highest = pickHigherValue(
+								challenge[opponentRole].highestDiff,
+								climbObj[datapoint]
+							);
+							challenge[opponentRole].highestDiff = highest;
+						} else if (datapoint === 'flashes') {
+							let highest = pickHigherValue(
+								challenge[opponentRole].flashes,
+								climbObj[datapoint]
+							);
+							challenge[opponentRole].flashes = highest;
+						} else if (datapoint === 'total') {
+							let highest = pickHigherValue(
+								challenge[opponentRole].attempts,
+								climbObj[datapoint]
+							);
+							challenge[opponentRole].attempts = highest;
+						} else if (datapoint === 'completed') {
+							let highest = pickHigherValue(
+								challenge[opponentRole].sends,
+								climbObj[datapoint]
+							);
+							challenge[opponentRole].sends = highest;
 						}
 					}
 				}
 			}
+
+			challenge[opponentRole].SARatio = roundToTwoDecimalPlaces(
+				challenge[opponentRole].sends / challenge[opponentRole].attempts
+			);
 		} else {
 			console.log('Could not find opponent climbs');
 		}
 
 		const finalObj = [
-			{ category: 'Flashes', challenger: 300, invitee: 150 },
-			{ category: 'Attempts', challenger: 300, invitee: 150 },
-			{ category: 'Sends', challenger: 300, invitee: 150 },
-			{ category: 'SARatio', challenger: 300, invitee: 150 },
-			{ category: 'HighestDiff', challenger: 300, invitee: 150 },
-			{ category: 'Custom', challenger: 300, invitee: 150 },
+			{
+				category: 'Flashes',
+				challenger: challenge.challenger.flashes,
+				invitee: challenge.invitee.flashes,
+				displayName: 'Flashes',
+			},
+			{
+				category: 'Attempts',
+				challenger: challenge.challenger.attempts,
+				invitee: challenge.invitee.attempts,
+				displayName: 'Attempts',
+			},
+			{
+				category: 'Sends',
+				challenger: challenge.challenger.sends,
+				invitee: challenge.invitee.sends,
+				displayName: 'Sends',
+			},
+			{
+				category: 'SARatio',
+				challenger: challenge.challenger.SARatio,
+				invitee: challenge.invitee.SARatio,
+				displayName: 'S/A Ratio',
+			},
+			{
+				category: 'HighestDiff',
+				challenger: challenge.challenger.highestDiff,
+				invitee: challenge.invitee.highestDiff,
+				displayName: 'Highest Difficulty',
+			},
 		];
 		this.setState({
 			currentChallenge: finalObj,
@@ -157,12 +229,12 @@ export default class CurrentChallenge extends React.Component {
 		try {
 			await this.renderCategories();
 		} catch (error) {
-			console.log('error :>> ', error);
+			console.log('category error :>> ', error);
 		}
 		try {
 			await this.calculateScore();
 		} catch (error) {
-			console.log('error :>> ', error);
+			console.log('score error :>> ', error);
 		}
 	}
 
@@ -198,23 +270,23 @@ export default class CurrentChallenge extends React.Component {
 					<View style={styles.categoriesContainer}>
 						<FlatList
 							style={styles.categoriesList}
-							data={this.state.categories}
-							keyExtractor={(item) => item}
+							data={this.state.currentChallenge}
+							keyExtractor={(item) => item.category}
 							renderItem={({ item }) => (
 								<View style={styles.categoryRow}>
 									<View style={styles.categoryLeft}>
 										<Text style={styles.listText}>
-											Left
+											{item.challenger}
 										</Text>
 									</View>
 									<View style={styles.categoryMiddle}>
 										<Text style={styles.textMiddle}>
-											{item}
+											{item.displayName}
 										</Text>
 									</View>
 									<View style={styles.categoryRight}>
 										<Text style={styles.listText}>
-											Right
+											{item.invitee}
 										</Text>
 									</View>
 								</View>

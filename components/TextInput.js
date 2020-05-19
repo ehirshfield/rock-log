@@ -8,7 +8,7 @@ export default function TextInputs({
 	onChangeText,
 	value,
 	secureTextEntry,
-	icon
+	icon,
 }) {
 	return (
 		<View style={styles.container}>
@@ -37,7 +37,7 @@ export default function TextInputs({
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		width: '90%'
+		width: '90%',
 	},
 	inputSection: {
 		flex: 1,
@@ -46,10 +46,11 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		borderColor: colors.backgroundColors.inputBackground,
 		borderBottomWidth: 1,
-		marginBottom: 50
+		marginBottom: 60,
+		marginHorizontal: 5,
 	},
 	inputIcon: {
-		padding: 10
+		padding: 10,
 	},
 	textInput: {
 		height: 40,
@@ -58,6 +59,7 @@ const styles = StyleSheet.create({
 		paddingRight: 10,
 		paddingBottom: 10,
 		paddingLeft: 0,
-		borderWidth: 0
-	}
+		borderWidth: 0,
+		color: colors.textColors.generalText,
+	},
 });

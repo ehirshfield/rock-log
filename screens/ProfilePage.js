@@ -11,7 +11,7 @@ export default class ProfilePage extends React.Component {
 		this.state = {
 			user: {},
 			isLoading: true,
-			errorMessage: null
+			errorMessage: null,
 		};
 		this.handleSignOut = this.handleSignOut.bind(this);
 	}
@@ -22,9 +22,9 @@ export default class ProfilePage extends React.Component {
 			.signOut()
 			.then(() => {
 				console.log('signout successful!');
-				//this.props.navigation.navigate('StartUpPage');
+				// this.props.navigation.navigate('StartUpPage');
 			})
-			.catch(error => {
+			.catch((error) => {
 				this.setState({ errorMessage: error.message });
 				console.log('error :', error);
 			});
@@ -35,17 +35,17 @@ export default class ProfilePage extends React.Component {
 			.collection('users')
 			.where('email', '==', this.userEmail)
 			.get()
-			.then(snap => {
-				snap.forEach(doc => {
+			.then((snap) => {
+				snap.forEach((doc) => {
 					this.setState({
 						user: doc.data(),
-						isLoading: false
+						isLoading: false,
 					});
 				});
 			})
-			.catch(error => {
+			.catch((error) => {
 				this.setState({
-					errorMessage: error.message
+					errorMessage: error.message,
 				});
 				console.log('error :', error);
 			});
@@ -98,7 +98,8 @@ const styles = StyleSheet.create({
 		top: 0,
 		bottom: 0,
 		alignItems: 'center',
-		justifyContent: 'center'
+		justifyContent: 'center',
+		backgroundColor: colors.backgroundColors.generalBackground,
 	},
 	container: {
 		position: 'absolute',
@@ -108,6 +109,6 @@ const styles = StyleSheet.create({
 		bottom: 0,
 		alignItems: 'center',
 		justifyContent: 'center',
-		backgroundColor: colors.backgroundColors.generalBackground
-	}
+		backgroundColor: colors.backgroundColors.generalBackground,
+	},
 });

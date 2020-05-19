@@ -6,6 +6,7 @@ import NewChallenge from '../components/NewChallenge';
 import CurrentChallenge from '../components/CurrentChallenge';
 import RemoveButton from '../components/RemoveButton';
 import { firestore, firebase } from '../config/firebase';
+import moment from 'moment';
 
 export default class ChallengePage extends React.Component {
 	constructor() {
@@ -105,7 +106,7 @@ export default class ChallengePage extends React.Component {
 
 	cancelCurrentChallengePage() {
 		this.setState({
-			newChallenge: false,
+			currentChallenge: false,
 		});
 	}
 
@@ -157,7 +158,7 @@ export default class ChallengePage extends React.Component {
 				inviteeEmail: userDoc.email,
 				inviteeId: userDoc.id,
 				inviteeName: userDoc.name,
-				startTime: 123,
+				startTime: moment().format('MM/DD/YYYY'),
 				endTime: 123,
 			});
 		} catch (error) {

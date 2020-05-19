@@ -4,7 +4,14 @@ import { View, StyleSheet, Text } from 'react-native';
 import ClimbButton from './ClimbButton';
 import { colors } from '../theme';
 
-export default function ClimbForm({ date, total, time, highestDiff }) {
+export default function ClimbForm({
+	date,
+	total,
+	time,
+	highestDiff,
+	showSingleClimbView,
+	climbs,
+}) {
 	return (
 		<View style={styles.formContainer}>
 			<View style={styles.topRow}>
@@ -20,7 +27,13 @@ export default function ClimbForm({ date, total, time, highestDiff }) {
 				<Text style={styles.normalText}>Date: {date}</Text>
 				<Text style={styles.normalText}>Time: {time}</Text>
 			</View>
-			<ClimbButton color='green' title='View Climbs' />
+			<ClimbButton
+				color='green'
+				title='View Climbs'
+				onPress={() => {
+					showSingleClimbView(climbs);
+				}}
+			/>
 		</View>
 	);
 }

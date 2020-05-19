@@ -27,13 +27,20 @@ export default class ClimbList extends React.Component {
 	onCollectionUpdate(querySnapshot) {
 		const climbs = [];
 		querySnapshot.forEach((doc) => {
-			const { date, highestDifficulty, time, total } = doc.data();
+			const {
+				date,
+				highestDifficulty,
+				time,
+				total,
+				singleClimbs,
+			} = doc.data();
 			climbs.push({
 				key: doc.id,
 				date,
 				highestDifficulty,
 				time,
 				total,
+				singleClimbs,
 			});
 		});
 		this.setState({
@@ -85,6 +92,10 @@ export default class ClimbList extends React.Component {
 								total={climb.total}
 								highestDiff={climb.highestDifficulty}
 								time={climb.time}
+								climbs={climb.singleClimbs}
+								showSingleClimbView={
+									this.props.showSingleClimbView
+								}
 							/>
 						);
 					})}

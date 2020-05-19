@@ -52,6 +52,11 @@ export default class LoginPage extends React.Component {
 						title='Email'
 						icon='email-outline'
 					/>
+				</KeyboardAvoidingView>
+				<KeyboardAvoidingView
+					behavior={Platform.OS == 'ios' ? 'padding' : 'height'}
+					style={styles.inputContainer}
+				>
 					<TextInput
 						placeholder='Password'
 						onChangeText={(password) => this.setState({ password })}
@@ -63,7 +68,12 @@ export default class LoginPage extends React.Component {
 				</KeyboardAvoidingView>
 
 				<View style={styles.buttonContainer}>
-					<Button title='Login' onPress={this.handleLogin} />
+					<Button
+						title='Login'
+						onPress={() => {
+							this.handleLogin();
+						}}
+					/>
 					<Button
 						title="Don't have an account? Sign Up"
 						onPress={() =>
@@ -99,7 +109,7 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 	},
 	inputContainer: {
-		flex: 2,
+		flex: 1,
 		flexDirection: 'column',
 		justifyContent: 'center',
 		alignItems: 'center',
