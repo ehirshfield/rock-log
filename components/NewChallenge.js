@@ -48,7 +48,7 @@ export default class NewChallenge extends React.Component {
 								title={item.name}
 								onPress={() => {
 									this.props.challengeInvite(item);
-									this.props.cancelChallenge();
+									this.props.cancelNewChallengePage();
 								}}
 							/>
 						</View>
@@ -59,7 +59,7 @@ export default class NewChallenge extends React.Component {
 						color={colors.buttonPrimaryBg}
 						title='Cancel'
 						onPress={() => {
-							this.props.cancelChallenge();
+							this.props.cancelNewChallengePage();
 						}}
 					/>
 				</View>

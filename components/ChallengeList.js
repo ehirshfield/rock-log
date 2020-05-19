@@ -67,7 +67,7 @@ export default class ChallengeList extends React.Component {
 									title='Details'
 									small={true}
 									onPress={() => {
-										this.props.showCurrentChallenge();
+										this.props.showCurrentChallenge(item);
 									}}
 								/>
 							)}

@@ -6,6 +6,7 @@ import NewChallenge from '../components/NewChallenge';
 import CurrentChallenge from '../components/CurrentChallenge';
 import RemoveButton from '../components/RemoveButton';
 import { firestore, firebase } from '../config/firebase';
+import moment from 'moment';
 
 export default class ChallengePage extends React.Component {
 	constructor() {
@@ -19,6 +20,7 @@ export default class ChallengePage extends React.Component {
 			challenges: [],
 			newChallenge: false,
 			currentChallenge: false,
+			currentChallengeObj: {},
 		};
 
 		this.onCollectionUpdate = this.onCollectionUpdate.bind(this);
@@ -89,9 +91,10 @@ export default class ChallengePage extends React.Component {
 		});
 	}
 
-	showCurrentChallenge() {
+	showCurrentChallenge(currentChallenge) {
 		this.setState({
 			currentChallenge: true,
+			currentChallengeObj: currentChallenge,
 		});
 	}
 
@@ -103,7 +106,7 @@ export default class ChallengePage extends React.Component {
 
 	cancelCurrentChallengePage() {
 		this.setState({
-			newChallenge: false,
+			currentChallenge: false,
 		});
 	}
 
@@ -155,7 +158,7 @@ export default class ChallengePage extends React.Component {
 				inviteeEmail: userDoc.email,
 				inviteeId: userDoc.id,
 				inviteeName: userDoc.name,
-				startTime: 123,
+				startTime: moment().format('MM/DD/YYYY'),
 				endTime: 123,
 			});
 		} catch (error) {
@@ -205,10 +208,12 @@ export default class ChallengePage extends React.Component {
 				<View style={styles.container}>
 					<View style={styles.newChallenge}>
 						<CurrentChallenge
+							currentChallenge={this.state.currentChallengeObj}
 							handleRemoveChallenge={this.handleRemoveChallenge}
 							cancelCurrentChallengePage={
 								this.cancelCurrentChallengePage
 							}
+							userEmail={this.userEmail}
 						/>
 					</View>
 				</View>

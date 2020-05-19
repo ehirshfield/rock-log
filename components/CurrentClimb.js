@@ -8,12 +8,10 @@ import { firestore, firebase } from '../config/firebase';
 import { calculateHighestDifficulty } from '../utils/common';
 import SingleClimb from './SingleClimb';
 
-let time;
-
 export default class CurrentClimb extends React.Component {
 	constructor(props) {
 		super(props);
-		this.userId = firebase.auth().currentUser.uid || null;
+		this.userEmail = firebase.auth().currentUser.email || null;
 		this.state = {
 			climbs: [],
 			singleClimb: false,
@@ -67,11 +65,13 @@ export default class CurrentClimb extends React.Component {
 		});
 	}
 
-	logRating(rating, time) {
+	logRating(rating, time, attempts, success) {
 		const climbs = this.state.climbs;
 		climbs.push({
 			difficulty: rating,
 			time: time,
+			attempts: attempts,
+			success: success,
 		});
 		this.setState({
 			climbs,
@@ -80,16 +80,37 @@ export default class CurrentClimb extends React.Component {
 
 	finishClimbing() {
 		const { climbs, runningTime } = this.state;
+		let filteredClimbs = climbs;
 		clearInterval(this.timer);
-		if (climbs.length > 0) {
-			const highest = calculateHighestDifficulty(climbs);
+
+		let flashes = 0;
+		let total = 0;
+		let completed = 0;
+		for (const climb of climbs) {
+			if (climb.attempts === 1) {
+				flashes++;
+			}
+			total = total + climb.attempts;
+			completed = completed + climb.success;
+		}
+		filteredClimbs = filteredClimbs.filter((single) => {
+			if (single.attempts === 0 && !single.success) {
+				return false;
+			}
+			return true;
+		});
+		const highest = calculateHighestDifficulty(climbs);
+
+		if (filteredClimbs.length > 0) {
 			firestore.collection('climbs').add({
 				date: moment().format('MM/DD/YYYY'),
-				highestDifficulty: 'V' + highest,
+				highestDifficulty: highest,
+				flashes: flashes,
 				time: runningTime,
-				total: climbs.length,
-				userId: this.userId,
-				singleClimbs: climbs,
+				completed: completed,
+				total: total,
+				singleClimbs: filteredClimbs,
+				email: this.userEmail,
 			});
 		}
 

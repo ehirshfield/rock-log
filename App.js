@@ -36,6 +36,7 @@ export default class App extends React.Component {
 							headerTitleStyle: {
 								fontWeight: 'bold',
 							},
+							headerShown: false,
 						}}
 					>
 						<Stack.Screen
@@ -47,11 +48,7 @@ export default class App extends React.Component {
 							name='SignUpPage'
 							component={SignUpPage}
 						/>
-						<Stack.Screen
-							name='MainApp'
-							component={MainApp}
-							options={{ headerShown: false }}
-						/>
+						<Stack.Screen name='MainApp' component={MainApp} />
 					</Stack.Navigator>
 				</NavigationContainer>
 			</View>

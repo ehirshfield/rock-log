@@ -17,3 +17,17 @@ export function convertTime(time) {
 
 	return hours + ':' + minutes + ':' + seconds + milliseconds;
 }
+
+export function pickHigherValue(one, two) {
+	if (one > two) {
+		return one;
+	} else if (one < two) {
+		return two;
+	} else {
+		return one;
+	}
+}
+
+export function roundToTwoDecimalPlaces(num) {
+	return Math.round((num + Number.EPSILON) * 100) / 100;
+}
