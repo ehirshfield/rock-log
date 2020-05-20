@@ -5,6 +5,9 @@ import {
 	View,
 	Button,
 	KeyboardAvoidingView,
+	SafeAreaView,
+	TouchableWithoutFeedback,
+	Keyboard,
 } from 'react-native';
 import { firebase } from '../config/firebase';
 import { colors } from '../theme/index';
@@ -31,57 +34,63 @@ export default class LoginPage extends React.Component {
 
 	render() {
 		return (
-			<View style={styles.container}>
-				{this.state.errorMessage && (
-					<Text style={{ color: 'red' }}>
-						{this.state.errorMessage}
-					</Text>
-				)}
-				<View style={styles.logoContainer}>
-					<Text style={styles.header}>Rock Log</Text>
-				</View>
+			<KeyboardAvoidingView
+				behavior={Platform.OS == 'ios' ? 'padding' : 'height'}
+				style={styles.container}
+			>
+				<SafeAreaView style={styles.container}>
+					<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+						<View style={styles.inner}>
+							{this.state.errorMessage && (
+								<Text style={{ color: 'red' }}>
+									{this.state.errorMessage}
+								</Text>
+							)}
+							<View style={styles.logoContainer}>
+								<Text style={styles.header}>Rock Log</Text>
+							</View>
 
-				<KeyboardAvoidingView
-					behavior={Platform.OS == 'ios' ? 'padding' : 'height'}
-					style={styles.inputContainer}
-				>
-					<TextInput
-						placeholder='Email'
-						onChangeText={(email) => this.setState({ email })}
-						value={this.state.email}
-						title='Email'
-						icon='email-outline'
-					/>
-				</KeyboardAvoidingView>
-				<KeyboardAvoidingView
-					behavior={Platform.OS == 'ios' ? 'padding' : 'height'}
-					style={styles.inputContainer}
-				>
-					<TextInput
-						placeholder='Password'
-						onChangeText={(password) => this.setState({ password })}
-						value={this.state.password}
-						title='Password'
-						icon='lock-outline'
-						secureTextEntry
-					/>
-				</KeyboardAvoidingView>
-
-				<View style={styles.buttonContainer}>
-					<Button
-						title='Login'
-						onPress={() => {
-							this.handleLogin();
-						}}
-					/>
-					<Button
-						title="Don't have an account? Sign Up"
-						onPress={() =>
-							this.props.navigation.navigate('SignUpPage')
-						}
-					/>
-				</View>
-			</View>
+							<View style={styles.inputContainer}>
+								<TextInput
+									placeholder='Email'
+									onChangeText={(email) =>
+										this.setState({ email })
+									}
+									value={this.state.email}
+									title='Email'
+									icon='email-outline'
+								/>
+								<TextInput
+									placeholder='Password'
+									onChangeText={(password) =>
+										this.setState({ password })
+									}
+									value={this.state.password}
+									title='Password'
+									icon='lock-outline'
+									secureTextEntry
+								/>
+							</View>
+							<View style={styles.buttonContainer}>
+								<Button
+									title='Login'
+									onPress={() => {
+										this.handleLogin();
+									}}
+								/>
+								<Button
+									title="Don't have an account? Sign Up"
+									onPress={() =>
+										this.props.navigation.navigate(
+											'SignUpPage'
+										)
+									}
+								/>
+							</View>
+						</View>
+					</TouchableWithoutFeedback>
+				</SafeAreaView>
+			</KeyboardAvoidingView>
 		);
 	}
 }
@@ -91,28 +100,22 @@ const styles = StyleSheet.create({
 		flex: 1,
 		backgroundColor: colors.backgroundColors.generalBackground,
 	},
+	inner: {
+		padding: 24,
+		flex: 1,
+		justifyContent: 'flex-end',
+	},
 	header: {
 		color: colors.textColors.generalText,
-		fontSize: 100,
-	},
-	textInput: {
-		height: 50,
-		width: '90%',
-		borderColor: 'gray',
-		borderWidth: 1,
-		marginTop: 8,
-		backgroundColor: colors.backgroundColors.inputBackground,
+		fontSize: 90,
 	},
 	logoContainer: {
-		flex: 4,
+		flex: 3,
 		justifyContent: 'center',
 		alignItems: 'center',
 	},
 	inputContainer: {
-		flex: 1,
-		flexDirection: 'column',
-		justifyContent: 'center',
-		alignItems: 'center',
+		flex: 3,
 	},
 	buttonContainer: {
 		flex: 2,

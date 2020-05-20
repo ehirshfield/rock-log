@@ -37,7 +37,6 @@ export default function TextInputs({
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		width: '90%',
 	},
 	inputSection: {
 		flex: 1,
@@ -48,12 +47,12 @@ const styles = StyleSheet.create({
 		borderBottomWidth: 1,
 		marginBottom: 60,
 		marginHorizontal: 5,
+		minHeight: 40,
 	},
 	inputIcon: {
 		padding: 10,
 	},
 	textInput: {
-		height: 40,
 		flex: 1,
 		paddingTop: 10,
 		paddingRight: 10,
