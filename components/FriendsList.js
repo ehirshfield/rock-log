@@ -113,8 +113,12 @@ const styles = StyleSheet.create({
 	profileRow: {
 		flexDirection: 'row',
 		justifyContent: 'space-between',
+		borderColor: colors.textColors.paragraphText,
+		borderBottomWidth: 0.2,
+		paddingBottom: 10,
 	},
 	title: {
 		fontSize: 30,
+		color: colors.textColors.paragraphText,
 	},
 });

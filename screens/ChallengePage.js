@@ -167,7 +167,11 @@ export default class ChallengePage extends React.Component {
 	}
 
 	render() {
-		if (!this.state.newChallenge && !this.state.currentChallenge) {
+		if (
+			!this.state.newChallenge &&
+			!this.state.currentChallenge &&
+			this.state.challenges
+		) {
 			return (
 				<View style={styles.container}>
 					<View style={styles.challenges}>
@@ -218,6 +222,17 @@ export default class ChallengePage extends React.Component {
 					</View>
 				</View>
 			);
+		} else if (!this.state.newChallenge && !this.state.challenges) {
+			return (
+				<View style={styles.container}>
+					<View style={styles.noChallenges}>
+						<Text stlye={styles.noChallengesText}>
+							No challenges found. Challenge a friend to a
+							climbing competition!
+						</Text>
+					</View>
+				</View>
+			);
 		}
 	}
 }
@@ -233,5 +248,13 @@ const styles = StyleSheet.create({
 	},
 	newChallenge: {
 		flex: 1,
+	},
+	noChallenges: {
+		flex: 1,
+		justifyContent: 'center',
+	},
+	noChallengesText: {
+		color: colors.textColors.generalText,
+		size: 50,
 	},
 });

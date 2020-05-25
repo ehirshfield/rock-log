@@ -4,6 +4,7 @@ import { View, ActivityIndicator, StyleSheet } from 'react-native';
 import ClimbForm from './ClimbForm';
 import StartingClimbToggle from './StartingClimbToggle';
 import { firestore, firebase } from '../config/firebase';
+import { colors } from '../theme';
 
 // Think about using Flatlist in the future for this list
 
@@ -99,6 +100,14 @@ export default class ClimbList extends React.Component {
 							/>
 						);
 					})}
+				{!this.state.climbs && (
+					<View style={styles.noClimbs}>
+						<Text style={styles.noClimbsText}>
+							No climb sessions saved. Click above to start
+							climbing!
+						</Text>
+					</View>
+				)}
 			</View>
 		);
 	}
@@ -113,5 +122,13 @@ const styles = StyleSheet.create({
 		bottom: 0,
 		alignItems: 'center',
 		justifyContent: 'center',
+	},
+	noClimbs: {
+		flex: 1,
+		justifyContent: 'center',
+	},
+	noClimbsText: {
+		color: colors.textColors.paragraphText,
+		fontSize: 30,
 	},
 });
