@@ -1,9 +1,10 @@
 import React from 'react';
-import { View, Text, StyleSheet, TextInput } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import FriendsList from '../components/FriendsList';
 import { colors } from '../theme';
 import { firestore, firebase } from '../config/firebase';
 import ClimbButton from '../components/ClimbButton';
+import TextInput from '../components/TextInput';
 
 export default class FriendsPage extends React.Component {
 	constructor() {
@@ -17,28 +18,28 @@ export default class FriendsPage extends React.Component {
 			errorMessage: null,
 			userId: '',
 			email: '',
-			pendingFriends: []
+			pendingFriends: [],
 		};
 		this.onCollectionUpdate = this.onCollectionUpdate.bind(this);
 	}
 
 	onCollectionUpdate(querySnapshot) {
-		querySnapshot.forEach(doc => {
+		querySnapshot.forEach((doc) => {
 			this.setState({
 				friends: doc.data().friends,
 				isLoading: false,
 				userId: doc.id,
-				pendingFriends: doc.data().pendingFriends
+				pendingFriends: doc.data().pendingFriends,
 			});
 		});
 	}
 
 	async handleAddFriend(friendEmail, currentFriendsList) {
 		// Check to see if friend already has invite or is a friend
-		if (currentFriendsList.find(user => user.email === friendEmail)) {
+		if (currentFriendsList.find((user) => user.email === friendEmail)) {
 			console.log('Friend already or already requested');
 			return this.setState({
-				email: ''
+				email: '',
 			});
 		}
 
@@ -51,19 +52,19 @@ export default class FriendsPage extends React.Component {
 			const friendId = snapshot.id;
 			const { name, pendingFriends } = snapshot.data();
 
-			if (pendingFriends.find(user => user.email === friendEmail)) {
+			if (pendingFriends.find((user) => user.email === friendEmail)) {
 				console.log('Friend already or already requested');
 				return this.setState({
-					email: ''
+					email: '',
 				});
 			} else {
 				pendingFriends.push({ id: friendId, name });
 				try {
 					await this.usersRef.doc(friendId).update({
-						pendingFriends: pendingFriends
+						pendingFriends: pendingFriends,
 					});
 					return this.setState({
-						email: ''
+						email: '',
 					});
 				} catch (error) {
 					console.error('Error updating friends list :', error);
@@ -78,7 +79,7 @@ export default class FriendsPage extends React.Component {
 	componentDidMount() {
 		this.friendsListener = this.usersRef
 			.where('email', '==', this.userEmail)
-			.onSnapshot(this.onCollectionUpdate, error => {
+			.onSnapshot(this.onCollectionUpdate, (error) => {
 				if (
 					error
 						.toString()
@@ -102,7 +103,7 @@ export default class FriendsPage extends React.Component {
 						style={styles.textInput}
 						autoCapitalize='none'
 						placeholder='Email'
-						onChangeText={email => this.setState({ email })}
+						onChangeText={(email) => this.setState({ email })}
 						value={this.state.email}
 					/>
 					<ClimbButton
@@ -116,22 +117,32 @@ export default class FriendsPage extends React.Component {
 						color='red'
 					/>
 				</View>
+
 				<View style={styles.friendsContainer}>
-					<View style={styles.pendingFriendList}>
-						<FriendsList
-							friends={this.state.pendingFriends}
-							userId={this.state.userId}
-							title='Pending Friends'
-							pendingFriendsList
-						/>
-					</View>
-					<View style={styles.friendList}>
-						<FriendsList
-							friends={this.state.friends}
-							userId={this.state.userId}
-							title='Friends'
-						/>
-					</View>
+					{!this.state.pendingFriends && !this.state.friends && (
+						<View>
+							<Text>Add some friends to compete against!</Text>
+						</View>
+					)}
+					{this.state.pendingFriends.length > 0 && (
+						<View style={styles.pendingFriendList}>
+							<FriendsList
+								friends={this.state.pendingFriends}
+								userId={this.state.userId}
+								title='Pending Friends'
+								pendingFriendsList
+							/>
+						</View>
+					)}
+					{this.state.friends.length > 0 && (
+						<View style={styles.friendList}>
+							<FriendsList
+								friends={this.state.friends}
+								userId={this.state.userId}
+								title='Friends'
+							/>
+						</View>
+					)}
 				</View>
 			</View>
 		);
@@ -142,15 +153,16 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		backgroundColor: colors.backgroundColors.generalBackground,
-		flexDirection: 'column'
+		flexDirection: 'column',
 	},
 	headerContainer: {
-		flex: 1
+		flex: 1,
 	},
 	header: {
 		paddingTop: 80,
 		color: colors.headingText,
-		textAlign: 'center'
+		textAlign: 'center',
+		fontSize: 30,
 	},
 	addFriendRow: {
 		paddingTop: 55,
@@ -158,7 +170,7 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		paddingHorizontal: 15,
-		flex: 1
+		flex: 1,
 	},
 	textInput: {
 		height: 40,
@@ -166,15 +178,15 @@ const styles = StyleSheet.create({
 		borderColor: 'gray',
 		borderWidth: 1,
 		marginTop: 8,
-		backgroundColor: colors.headingText
+		backgroundColor: colors.headingText,
 	},
 	pendingFriendList: {
-		flex: 1
+		flex: 1,
 	},
 	friendList: {
-		flex: 1
+		flex: 1,
 	},
 	friendsContainer: {
-		flex: 3
-	}
+		flex: 3,
+	},
 });
