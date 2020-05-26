@@ -3,8 +3,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import FriendsList from '../components/FriendsList';
 import { colors } from '../theme';
 import { firestore, firebase } from '../config/firebase';
-import ClimbButton from '../components/ClimbButton';
-import TextInput from '../components/TextInput';
+import { Input, Button, Icon } from 'react-native-elements';
 
 export default class FriendsPage extends React.Component {
 	constructor() {
@@ -37,9 +36,9 @@ export default class FriendsPage extends React.Component {
 	async handleAddFriend(friendEmail, currentFriendsList) {
 		// Check to see if friend already has invite or is a friend
 		if (currentFriendsList.find((user) => user.email === friendEmail)) {
-			console.log('Friend already or already requested');
 			return this.setState({
 				email: '',
+				errorMessage: 'Friend already or already requested',
 			});
 		}
 
@@ -51,20 +50,21 @@ export default class FriendsPage extends React.Component {
 			const snapshot = friend.docs[0];
 			const friendId = snapshot.id;
 			const { name, pendingFriends } = snapshot.data();
-
+			console.log('pendingFriends :>> ', pendingFriends);
 			if (pendingFriends.find((user) => user.email === friendEmail)) {
-				console.log('Friend already or already requested');
 				return this.setState({
 					email: '',
+					errorMessage: 'Friend already or already requested',
 				});
 			} else {
-				pendingFriends.push({ id: friendId, name });
+				pendingFriends.push({ id: friendId, name, email: friendEmail });
 				try {
 					await this.usersRef.doc(friendId).update({
 						pendingFriends: pendingFriends,
 					});
 					return this.setState({
 						email: '',
+						errorMessage: 'Friend Request Sent!',
 					});
 				} catch (error) {
 					console.error('Error updating friends list :', error);
@@ -72,12 +72,15 @@ export default class FriendsPage extends React.Component {
 			}
 		} else {
 			console.log('Could not find friend');
-			// Maybe handle a message that says Sent! even if it fails
+			this.setState({
+				errorMessage:
+					'Could not find friend. Please double check the spelling',
+			});
 		}
 	}
 
-	componentDidMount() {
-		this.friendsListener = this.usersRef
+	async componentDidMount() {
+		this.friendsListener = await this.usersRef
 			.where('email', '==', this.userEmail)
 			.onSnapshot(this.onCollectionUpdate, (error) => {
 				if (
@@ -96,26 +99,41 @@ export default class FriendsPage extends React.Component {
 		return (
 			<View style={styles.container}>
 				<View stlyle={styles.headerContainer}>
-					<Text style={styles.header}>Friends Page!</Text>
+					<Text style={styles.header}>Friends Page</Text>
 				</View>
-				<View style={styles.addFriendRow}>
-					<TextInput
-						style={styles.textInput}
-						autoCapitalize='none'
-						placeholder='Email'
-						onChangeText={(email) => this.setState({ email })}
-						value={this.state.email}
-					/>
-					<ClimbButton
-						title='Add Friend'
-						onPress={() => {
-							this.handleAddFriend(
-								this.state.email,
-								this.state.friends
-							);
-						}}
-						color='red'
-					/>
+				<View style={styles.addFriendContainer}>
+					<View style={styles.addFriendRow}>
+						<Input
+							autoCapitalize='none'
+							placeholder="Add a Friend's Email"
+							onChangeText={(email) => this.setState({ email })}
+							value={this.state.email}
+							containerStyle={styles.inputContainerStyle}
+							inputStyle={styles.textInputStyle}
+							placeholderTextColor={
+								colors.textColors.paragraphText
+							}
+							errorStyle={{ color: 'red' }}
+							errorMessage={this.state.errorMessage}
+						/>
+						<Button
+							icon={
+								<Icon
+									name='account-plus-outline'
+									type='material-community'
+									size={35}
+									color={colors.textColors.paragraphText}
+								/>
+							}
+							type='clear'
+							onPress={() => {
+								this.handleAddFriend(
+									this.state.email,
+									this.state.friends
+								);
+							}}
+						/>
+					</View>
 				</View>
 
 				<View style={styles.friendsContainer}>
@@ -159,26 +177,29 @@ const styles = StyleSheet.create({
 		flex: 1,
 	},
 	header: {
-		paddingTop: 80,
+		paddingTop: 60,
 		color: colors.headingText,
 		textAlign: 'center',
 		fontSize: 30,
 	},
-	addFriendRow: {
-		paddingTop: 55,
-		color: colors.textColors.paragraphText,
-		flexDirection: 'row',
-		justifyContent: 'space-between',
+	addFriendContainer: {
 		paddingHorizontal: 15,
 		flex: 1,
 	},
-	textInput: {
-		height: 40,
-		width: '65%',
-		borderColor: 'gray',
-		borderWidth: 1,
+	addFriendRow: {
+		flex: 1,
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+	},
+	textInputStyle: {
+		width: '40%',
 		marginTop: 8,
-		backgroundColor: colors.headingText,
+		color: colors.textColors.paragraphText,
+		fontSize: 15,
+	},
+	inputContainerStyle: {
+		flex: 1,
+		width: '65%',
 	},
 	pendingFriendList: {
 		flex: 1,
@@ -187,6 +208,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 	},
 	friendsContainer: {
-		flex: 3,
+		flex: 5,
+		paddingHorizontal: 15,
 	},
 });

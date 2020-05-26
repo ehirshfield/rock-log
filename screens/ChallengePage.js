@@ -255,6 +255,6 @@ const styles = StyleSheet.create({
 	},
 	noChallengesText: {
 		color: colors.textColors.generalText,
-		size: 50,
+		fontSize: 50,
 	},
 });
