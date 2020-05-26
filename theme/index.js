@@ -23,7 +23,7 @@ export const colors = {
 	buttonPrimaryBg: palette.white,
 	headingText: palette.white,
 	ratingButtons: palette.neon_blue,
-	startingClimbButton: palette.neon_pink,
+	startingClimbButton: palette.vice_blue,
 	signoutButton: palette.vice_blue,
 	textColors: {
 		generalText: palette.white,
@@ -35,5 +35,9 @@ export const colors = {
 		generalBackgroundGreyLighter: palette.lighter_grey,
 		inputBackground: palette.white,
 		climbBackground: palette.vice_grey,
+	},
+	iconColors: {
+		deleteIcon: palette.neon_pink,
+		acceptIcon: palette.green,
 	},
 };

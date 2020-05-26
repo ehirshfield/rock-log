@@ -22,7 +22,10 @@ export default class ProfilePage extends React.Component {
 			.signOut()
 			.then(() => {
 				console.log('signout successful!');
-				// this.props.navigation.navigate('StartUpPage');
+				this.props.navigation.reset({
+					index: 0,
+					routes: [{ name: 'StartUpPage' }],
+				});
 			})
 			.catch((error) => {
 				this.setState({ errorMessage: error.message });

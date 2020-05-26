@@ -3,6 +3,7 @@ import React from 'react';
 import { colors } from '../theme';
 import RemoveButton from './RemoveButton';
 import { firestore } from '../config/firebase';
+import { Button, Icon } from 'react-native-elements';
 
 export default class FriendsList extends React.Component {
 	constructor() {
@@ -20,6 +21,23 @@ export default class FriendsList extends React.Component {
 			})
 			.then(() => {
 				console.log('Removed friend!');
+			})
+			.catch((error) => {
+				console.error(error);
+			});
+	}
+
+	handleRemovePendingUser(deleteId, friends) {
+		firestore
+			.collection('users')
+			.doc(this.props.userId)
+			.update({
+				pendingFriends: friends.filter(
+					(friend) => friend.id !== deleteId
+				),
+			})
+			.then(() => {
+				console.log('Removed pending friend!');
 			})
 			.catch((error) => {
 				console.error(error);
@@ -68,29 +86,66 @@ export default class FriendsList extends React.Component {
 						<View style={styles.profileRow}>
 							<Text style={styles.item}>{item.name}</Text>
 							{this.props.pendingFriendsList && (
-								<RemoveButton
-									color={colors.buttonPrimaryBg}
-									title='Add'
-									small={true}
+								<View style={styles.pendingBtns}>
+									<Button
+										icon={
+											<Icon
+												name='check-outline'
+												type='material-community'
+												size={35}
+												color={
+													colors.iconColors.acceptIcon
+												}
+											/>
+										}
+										type='clear'
+										onPress={() => {
+											this.handleAcceptFriend(
+												item.id,
+												this.props.friends
+											);
+										}}
+									/>
+									<Button
+										icon={
+											<Icon
+												name='trash-can-outline'
+												type='material-community'
+												size={35}
+												color={
+													colors.iconColors.deleteIcon
+												}
+											/>
+										}
+										type='clear'
+										onPress={() => {
+											this.handleRemovePendingUser(
+												item.id,
+												this.props.friends
+											);
+										}}
+									/>
+								</View>
+							)}
+							{!this.props.pendingFriendsList && (
+								<Button
+									icon={
+										<Icon
+											name='trash-can-outline'
+											type='material-community'
+											size={35}
+											color={colors.iconColors.deleteIcon}
+										/>
+									}
+									type='clear'
 									onPress={() => {
-										this.handleAcceptFriend(
+										this.handleRemoveUser(
 											item.id,
 											this.props.friends
 										);
 									}}
 								/>
 							)}
-							<RemoveButton
-								color={colors.buttonPrimaryBg}
-								title='Remove'
-								small={true}
-								onPress={() => {
-									this.handleRemoveUser(
-										item.id,
-										this.props.friends
-									);
-								}}
-							/>
 						</View>
 					)}
 				/>
@@ -120,5 +175,9 @@ const styles = StyleSheet.create({
 	title: {
 		fontSize: 30,
 		color: colors.textColors.paragraphText,
+	},
+	pendingBtns: {
+		flex: 1,
+		flexDirection: 'row-reverse',
 	},
 });
