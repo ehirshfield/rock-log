@@ -3,8 +3,7 @@ import React from 'react';
 import { colors } from '../theme';
 import { firestore } from '../config/firebase';
 import GenericButton from './common/GenericButton';
-import moment from 'moment';
-import { pickHigherValue, roundToTwoDecimalPlaces } from '../utils/common';
+import { prepChallenger } from '../utils/challenge';
 
 const categoryScores = [
 	{ category: 'Flashes', weight: 300, tie: 150 },
@@ -98,43 +97,13 @@ export default class CurrentChallenge extends React.Component {
 			.where('email', '==', this.props.userEmail)
 			.get();
 
-		// Store today's highest stats
+		let userPreppedChallange;
+		// Prep User
 		if (!userClimbs.empty) {
-			for (let climb of userClimbs.docs) {
-				if (climb.data().date === moment().format('MM/DD/YYYY')) {
-					let climbObj = climb.data();
-					for (let datapoint in climbObj) {
-						if (datapoint === 'highestDifficulty') {
-							let highest = pickHigherValue(
-								challenge[userRole].highestDiff,
-								climbObj[datapoint]
-							);
-							challenge[userRole].highestDiff = highest;
-						} else if (datapoint === 'flashes') {
-							let highest = pickHigherValue(
-								challenge[userRole].flashes,
-								climbObj[datapoint]
-							);
-							challenge[userRole].flashes = highest;
-						} else if (datapoint === 'total') {
-							let highest = pickHigherValue(
-								challenge[userRole].attempts,
-								climbObj[datapoint]
-							);
-							challenge[userRole].attempts = highest;
-						} else if (datapoint === 'completed') {
-							let highest = pickHigherValue(
-								challenge[userRole].sends,
-								climbObj[datapoint]
-							);
-							challenge[userRole].sends = highest;
-						}
-					}
-				}
-			}
-
-			challenge[userRole].SARatio = roundToTwoDecimalPlaces(
-				challenge[userRole].sends / challenge[userRole].attempts
+			userPreppedChallange = prepChallenger(
+				userClimbs,
+				userRole,
+				challenge
 			);
 		} else {
 			console.log('Could not find user climbs');
@@ -146,43 +115,13 @@ export default class CurrentChallenge extends React.Component {
 			.where('email', '==', opponentEmail)
 			.get();
 
+		let oppPreppedChallenge;
 		// Store opponent today's highest stats
 		if (!opponentClimbs.empty) {
-			for (let climb of opponentClimbs.docs) {
-				if (climb.data().date === moment().format('MM/DD/YYYY')) {
-					let climbObj = climb.data();
-					for (let datapoint in climbObj) {
-						if (datapoint === 'highestDifficulty') {
-							let highest = pickHigherValue(
-								challenge[opponentRole].highestDiff,
-								climbObj[datapoint]
-							);
-							challenge[opponentRole].highestDiff = highest;
-						} else if (datapoint === 'flashes') {
-							let highest = pickHigherValue(
-								challenge[opponentRole].flashes,
-								climbObj[datapoint]
-							);
-							challenge[opponentRole].flashes = highest;
-						} else if (datapoint === 'total') {
-							let highest = pickHigherValue(
-								challenge[opponentRole].attempts,
-								climbObj[datapoint]
-							);
-							challenge[opponentRole].attempts = highest;
-						} else if (datapoint === 'completed') {
-							let highest = pickHigherValue(
-								challenge[opponentRole].sends,
-								climbObj[datapoint]
-							);
-							challenge[opponentRole].sends = highest;
-						}
-					}
-				}
-			}
-
-			challenge[opponentRole].SARatio = roundToTwoDecimalPlaces(
-				challenge[opponentRole].sends / challenge[opponentRole].attempts
+			oppPreppedChallenge = prepChallenger(
+				opponentClimbs,
+				opponentRole,
+				userPreppedChallange
 			);
 		} else {
 			console.log('Could not find opponent climbs');
@@ -191,32 +130,32 @@ export default class CurrentChallenge extends React.Component {
 		const finalObj = [
 			{
 				category: 'Flashes',
-				challenger: challenge.challenger.flashes,
-				invitee: challenge.invitee.flashes,
+				challenger: oppPreppedChallenge.challenger.flashes,
+				invitee: oppPreppedChallenge.invitee.flashes,
 				displayName: 'Flashes',
 			},
 			{
 				category: 'Attempts',
-				challenger: challenge.challenger.attempts,
-				invitee: challenge.invitee.attempts,
+				challenger: oppPreppedChallenge.challenger.attempts,
+				invitee: oppPreppedChallenge.invitee.attempts,
 				displayName: 'Attempts',
 			},
 			{
 				category: 'Sends',
-				challenger: challenge.challenger.sends,
-				invitee: challenge.invitee.sends,
+				challenger: oppPreppedChallenge.challenger.sends,
+				invitee: oppPreppedChallenge.invitee.sends,
 				displayName: 'Sends',
 			},
 			{
 				category: 'SARatio',
-				challenger: challenge.challenger.SARatio,
-				invitee: challenge.invitee.SARatio,
+				challenger: oppPreppedChallenge.challenger.SARatio,
+				invitee: oppPreppedChallenge.invitee.SARatio,
 				displayName: 'S/A Ratio',
 			},
 			{
 				category: 'HighestDiff',
-				challenger: challenge.challenger.highestDiff,
-				invitee: challenge.invitee.highestDiff,
+				challenger: oppPreppedChallenge.challenger.highestDiff,
+				invitee: oppPreppedChallenge.invitee.highestDiff,
 				displayName: 'Highest Difficulty',
 			},
 		];

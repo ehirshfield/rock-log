@@ -4,6 +4,7 @@ import { colors } from '../theme';
 import RemoveButton from './RemoveButton';
 import { firestore } from '../config/firebase';
 import moment from 'moment';
+import { Button, Icon } from 'react-native-elements';
 
 export default class ChallengeList extends React.Component {
 	constructor() {
@@ -43,29 +44,55 @@ export default class ChallengeList extends React.Component {
 							{!item.accepted &&
 								item.inviteeEmail === this.props.userEmail && (
 									<View style={styles.btnRow}>
-										<RemoveButton
-											color={colors.buttonPrimaryBg}
-											title='Accept'
-											small={true}
+										<Button
+											icon={
+												<Icon
+													name='check-outline'
+													type='material-community'
+													size={35}
+													color={
+														colors.textColors
+															.paragraphText
+													}
+												/>
+											}
+											type='clear'
 											onPress={() => {
 												this.handleAcceptChallenge(
 													item.id
 												);
 											}}
 										/>
-										<RemoveButton
-											color={colors.buttonPrimaryBg}
-											title='Deny'
-											small={true}
+										<Button
+											icon={
+												<Icon
+													name='close-outline'
+													type='material-community'
+													size={35}
+													color={
+														colors.textColors
+															.paragraphText
+													}
+												/>
+											}
+											type='clear'
 											onPress={() => {}}
 										/>
 									</View>
 								)}
 							{item.accepted && (
-								<RemoveButton
-									color={colors.buttonPrimaryBg}
-									title='Details'
-									small={true}
+								<Button
+									icon={
+										<Icon
+											name='dots-horizontal'
+											type='material-community'
+											size={35}
+											color={
+												colors.textColors.paragraphText
+											}
+										/>
+									}
+									type='clear'
 									onPress={() => {
 										this.props.showCurrentChallenge(item);
 									}}
