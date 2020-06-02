@@ -39,7 +39,9 @@ export default class ChallengeList extends React.Component {
 					renderItem={({ item }) => (
 						<View style={styles.profileRow}>
 							<Text style={styles.item}>
-								{item.challengerName}
+								{item.challengerEmail === this.props.userEmail
+									? item.inviteeName
+									: item.challengerName}
 							</Text>
 							{!item.accepted &&
 								item.inviteeEmail === this.props.userEmail && (

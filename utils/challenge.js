@@ -1,7 +1,7 @@
 import moment from 'moment';
 import { pickHigherValue, roundToTwoDecimalPlaces } from './common';
 
-export async function prepChallenger(
+export function prepChallenger(
 	userClimbs,
 	userRole,
 	challenge,

@@ -107,6 +107,7 @@ export default class CurrentChallenge extends React.Component {
 			);
 		} else {
 			console.log('Could not find user climbs');
+			userPreppedChallange = challenge;
 		}
 
 		// Get opponent climbs
@@ -125,6 +126,7 @@ export default class CurrentChallenge extends React.Component {
 			);
 		} else {
 			console.log('Could not find opponent climbs');
+			oppPreppedChallenge = userPreppedChallange;
 		}
 
 		const finalObj = [

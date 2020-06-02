@@ -17,6 +17,7 @@ export default class FriendsPage extends React.Component {
 			errorMessage: null,
 			userId: '',
 			email: '',
+			name: '',
 			pendingFriends: [],
 		};
 		this.onCollectionUpdate = this.onCollectionUpdate.bind(this);
@@ -28,6 +29,7 @@ export default class FriendsPage extends React.Component {
 				friends: doc.data().friends,
 				isLoading: false,
 				userId: doc.id,
+				name: doc.data().name,
 				pendingFriends: doc.data().pendingFriends,
 			});
 		});
@@ -42,6 +44,13 @@ export default class FriendsPage extends React.Component {
 			});
 		}
 
+		if (this.userEmail === friendEmail) {
+			return this.setState({
+				email: '',
+				errorMessage: "You can't be your own friend... I think",
+			});
+		}
+
 		// Add user to pending friends list
 		const friend = await this.usersRef
 			.where('email', '==', friendEmail)
@@ -49,15 +58,18 @@ export default class FriendsPage extends React.Component {
 		if (!friend.empty) {
 			const snapshot = friend.docs[0];
 			const friendId = snapshot.id;
-			const { name, pendingFriends } = snapshot.data();
-			console.log('pendingFriends :>> ', pendingFriends);
+			const { pendingFriends } = snapshot.data();
 			if (pendingFriends.find((user) => user.email === friendEmail)) {
 				return this.setState({
 					email: '',
 					errorMessage: 'Friend already or already requested',
 				});
 			} else {
-				pendingFriends.push({ id: friendId, name, email: friendEmail });
+				pendingFriends.push({
+					id: this.state.userId,
+					name: this.state.name,
+					email: this.userEmail,
+				});
 				try {
 					await this.usersRef.doc(friendId).update({
 						pendingFriends: pendingFriends,
