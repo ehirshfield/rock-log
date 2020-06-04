@@ -44,6 +44,9 @@ export default class CurrentChallenge extends React.Component {
 						challengerScore += score.weight;
 					} else if (row.challenger < row.invitee) {
 						inviteeScore += score.weight;
+					} else if (row.challenger === 0 && row.invitee === 0) {
+						challengerScore += 0;
+						inviteeScore += 0;
 					} else {
 						challengerScore += score.tie;
 						inviteeScore += score.tie;

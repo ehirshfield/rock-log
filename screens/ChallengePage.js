@@ -7,6 +7,7 @@ import CurrentChallenge from '../components/CurrentChallenge';
 import RemoveButton from '../components/RemoveButton';
 import { firestore, firebase } from '../config/firebase';
 import moment from 'moment';
+import { Button, Icon } from 'react-native-elements';
 
 export default class ChallengePage extends React.Component {
 	constructor() {
@@ -184,13 +185,12 @@ export default class ChallengePage extends React.Component {
 						/>
 					</View>
 					<View style={styles.newChallenge}>
-						<RemoveButton
-							color='pink'
-							title='New Challenge'
-							small={true}
+						<Button
+							title='Add New Challenger'
 							onPress={() => {
 								this.showNewChallenge();
 							}}
+							buttonStyle={styles.newChallengeBtn}
 						/>
 					</View>
 				</View>
@@ -244,10 +244,16 @@ const styles = StyleSheet.create({
 		flexDirection: 'column',
 	},
 	challenges: {
-		flex: 1,
+		flex: 4,
 	},
 	newChallenge: {
 		flex: 1,
+		flexDirection: 'column-reverse',
+		justifyContent: 'center',
+	},
+	newChallengeBtn: {
+		height: 80,
+		backgroundColor: colors.startingClimbButton,
 	},
 	noChallenges: {
 		flex: 1,

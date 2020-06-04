@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, ScrollView, SafeAreaView, Text } from 'react-native';
+import { StyleSheet, View, ScrollView, SafeAreaView } from 'react-native';
 import { colors } from '../theme/index';
 
 import ClimbList from '../components/ClimbList';
