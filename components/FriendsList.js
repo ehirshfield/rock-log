@@ -1,7 +1,6 @@
 import { StyleSheet, Text, FlatList, View, SafeAreaView } from 'react-native';
 import React from 'react';
 import { colors } from '../theme';
-import RemoveButton from './RemoveButton';
 import { firestore } from '../config/firebase';
 import { Button, Icon } from 'react-native-elements';
 

@@ -111,6 +111,7 @@ export default class CurrentClimb extends React.Component {
 				total: total,
 				singleClimbs: filteredClimbs,
 				email: this.userEmail,
+				endTime: moment().unix(),
 			});
 		}
 
