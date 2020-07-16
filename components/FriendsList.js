@@ -61,14 +61,37 @@ export default class FriendsList extends React.Component {
 			console.error(error);
 		}
 
+		let userDoc, docId;
 		try {
 			const user = await userRef.get();
 			const newFriends = user.data().friends;
+			userDoc = user.data();
+			docId = user.id;
 			newFriends.push(friendDoc);
 			await userRef.update({
 				friends: newFriends,
 			});
 			console.log('Added friend!');
+		} catch (error) {
+			console.error(error);
+		}
+
+		// Add this friend to other user too
+		const friendRef = await firestore.collection('users').doc(friendId);
+
+		try {
+			const user = await friendRef.get();
+			const newFriendDoc = {
+				id: docId,
+				email: userDoc.email,
+				name: userDoc.name,
+			};
+			const newFriends = user.data().friends;
+			newFriends.push(newFriendDoc);
+			await friendRef.update({
+				friends: newFriends,
+			});
+			console.log('Added friend to other user!');
 		} catch (error) {
 			console.error(error);
 		}
