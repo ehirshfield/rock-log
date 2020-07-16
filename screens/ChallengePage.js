@@ -4,10 +4,9 @@ import { colors } from '../theme';
 import ChallengeList from '../components/ChallengeList';
 import NewChallenge from '../components/NewChallenge';
 import CurrentChallenge from '../components/CurrentChallenge';
-import RemoveButton from '../components/RemoveButton';
 import { firestore, firebase } from '../config/firebase';
 import moment from 'moment';
-import { Button, Icon } from 'react-native-elements';
+import { Button } from 'react-native-elements';
 
 export default class ChallengePage extends React.Component {
 	constructor() {
@@ -159,7 +158,8 @@ export default class ChallengePage extends React.Component {
 				inviteeEmail: userDoc.email,
 				inviteeId: userDoc.id,
 				inviteeName: userDoc.name,
-				startTime: moment().format('MM/DD/YYYY'),
+				sentDate: moment().format('MM/DD/YYYY'),
+				startTime: 123,
 				endTime: 123,
 			});
 		} catch (error) {
@@ -175,9 +175,11 @@ export default class ChallengePage extends React.Component {
 		) {
 			return (
 				<View style={styles.container}>
+					<View stlyle={styles.headerContainer}>
+						<Text style={styles.header}>Challenges</Text>
+					</View>
 					<View style={styles.challenges}>
 						<ChallengeList
-							title='Challenges'
 							challenges={this.state.challenges}
 							userEmail={this.userEmail}
 							showCurrentChallenge={this.showCurrentChallenge}
@@ -222,7 +224,10 @@ export default class ChallengePage extends React.Component {
 					</View>
 				</View>
 			);
-		} else if (!this.state.newChallenge && !this.state.challenges) {
+		} else if (
+			!this.state.newChallenge &&
+			this.state.challenges.length === 0
+		) {
 			return (
 				<View style={styles.container}>
 					<View style={styles.noChallenges}>
@@ -243,6 +248,15 @@ const styles = StyleSheet.create({
 		backgroundColor: colors.backgroundColors.generalBackground,
 		flexDirection: 'column',
 	},
+	headerContainer: {
+		flex: 1,
+	},
+	header: {
+		paddingTop: 60,
+		color: colors.headingText,
+		textAlign: 'center',
+		fontSize: 30,
+	},
 	challenges: {
 		flex: 4,
 	},
@@ -250,10 +264,14 @@ const styles = StyleSheet.create({
 		flex: 1,
 		flexDirection: 'column-reverse',
 		justifyContent: 'center',
+		marginHorizontal: 15,
 	},
 	newChallengeBtn: {
 		height: 80,
 		backgroundColor: colors.startingClimbButton,
+		borderWidth: 2,
+		borderRadius: 10,
+		borderColor: colors.startingClimbButton,
 	},
 	noChallenges: {
 		flex: 1,

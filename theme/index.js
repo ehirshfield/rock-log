@@ -18,6 +18,8 @@ const palette = {
 	grey: '#404149',
 	light_grey: '#6a6b71',
 	lighter_grey: '#95959a',
+	theme_dark_blue: '#0292b7',
+	yellow: '#fcd303',
 };
 export const colors = {
 	buttonPrimaryBg: palette.white,
@@ -35,9 +37,15 @@ export const colors = {
 		generalBackgroundGreyLighter: palette.lighter_grey,
 		inputBackground: palette.white,
 		climbBackground: palette.vice_grey,
+		theme_dark_blue: palette.theme_dark_blue,
 	},
 	iconColors: {
 		deleteIcon: palette.neon_pink,
 		acceptIcon: palette.green,
+		logAttemptIcon: palette.yellow,
+		resumeIcon: palette.neon_blue,
+		pauseIcon: palette.neon_blue,
+		sendIcon: palette.neon_green,
+		giveUpIcon: palette.neon_pink,
 	},
 };

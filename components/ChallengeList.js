@@ -78,7 +78,11 @@ export default class ChallengeList extends React.Component {
 												/>
 											}
 											type='clear'
-											onPress={() => {}}
+											onPress={() => {
+												this.props.handleRemoveChallenge(
+													item.id
+												);
+											}}
 										/>
 									</View>
 								)}

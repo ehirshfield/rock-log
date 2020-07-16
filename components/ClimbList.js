@@ -25,7 +25,7 @@ export default class ClimbList extends React.Component {
 		this.toggleClimbList = this.toggleClimbList.bind(this);
 	}
 
-	onCollectionUpdate(querySnapshot) {
+	async onCollectionUpdate(querySnapshot) {
 		const climbs = [];
 		querySnapshot.forEach((doc) => {
 			const {
@@ -44,10 +44,29 @@ export default class ClimbList extends React.Component {
 				singleClimbs,
 			});
 		});
+
 		this.setState({
 			climbs,
 			isLoading: false,
 		});
+
+		// Update total climb count
+		const user = await firestore
+			.collection('users')
+			.where('email', '==', this.userEmail)
+			.get();
+		if (!user.empty) {
+			const snapshot = user.docs[0];
+			const docId = snapshot.id;
+			const doc = snapshot.data();
+			console.log('totalClimbs :>> ', doc.totalClimbs);
+			console.log('climbs.length :>> ', climbs.length);
+			if (!doc.totalClimbs || doc.totalClimbs !== climbs.length) {
+				await firestore.collection('users').doc(docId).update({
+					totalClimbs: climbs.length,
+				});
+			}
+		}
 	}
 
 	componentDidMount() {
