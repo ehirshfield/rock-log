@@ -62,28 +62,34 @@ export default class ProfilePage extends React.Component {
 
 	render() {
 		const { name, email, nickname } = this.state.user;
+		const numFriends = this.state.user.friends
+			? this.state.user.friends.length
+			: 0;
+		const stringFriends = numFriends.toString();
+		const winRecord = this.state.user.wins
+			? this.state.user.wins.toString() +
+			  ' - ' +
+			  this.state.user.loses.toString()
+			: '0 - 0';
+		const totalClimbs = this.state.user.totalClimbs
+			? this.state.user.totalClimbs.toString()
+			: '-';
 
 		const statList = [
 			{
 				title: 'Workouts',
 				icon: 'av-timer',
-				rightTitle: this.state.user.totalClimbs
-					? this.state.user.totalClimbs
-					: '-',
+				rightTitle: totalClimbs,
 			},
 			{
 				title: 'Record',
 				icon: 'counter',
-				rightTitle: this.state.user.wins
-					? this.state.user.wins + ' - ' + this.state.user.loses
-					: '0 - 0',
+				rightTitle: winRecord,
 			},
 			{
 				title: 'Friends',
 				icon: 'account-multiple',
-				rightTitle: this.state.user.friends
-					? this.state.user.friends.length
-					: '-',
+				rightTitle: stringFriends,
 			},
 		];
 

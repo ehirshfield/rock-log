@@ -161,38 +161,41 @@ export default class CurrentClimb extends React.Component {
 						/>
 					</View>
 				) : (
-					<View>
+					<View style={styles.container}>
 						<View style={styles.ratingContainer}>
 							{climbRatings}
 						</View>
-
-						<ClimbTimer time={this.state.runningTime} />
-						<View style={styles.endSessionButtonContainer}>
-							{!status ? (
-								<ClimbButton
-									title='Resume Climbing'
-									onPress={() => {
-										this.handleClimbTime();
-									}}
-									color='green'
-								/>
-							) : (
-								<ClimbButton
-									title='Pause Climbing'
-									onPress={() => {
-										this.handleClimbTime();
-									}}
-									color='red'
-								/>
-							)}
+						<View style={styles.timerContainer}>
+							<ClimbTimer time={this.state.runningTime} />
 						</View>
-						<View style={styles.endSessionButtonContainer}>
-							<ClimbButton
-								title='Finished Climbing'
-								onPress={() => {
-									this.finishClimbing();
-								}}
-							/>
+						<View style={styles.buttonContainer}>
+							<View style={styles.endSessionButtonContainer}>
+								{!status ? (
+									<ClimbButton
+										title='Resume Climbing'
+										onPress={() => {
+											this.handleClimbTime();
+										}}
+										color='green'
+									/>
+								) : (
+									<ClimbButton
+										title='Pause Climbing'
+										onPress={() => {
+											this.handleClimbTime();
+										}}
+										color='red'
+									/>
+								)}
+							</View>
+							<View style={styles.endSessionButtonContainer}>
+								<ClimbButton
+									title='Finished Climbing'
+									onPress={() => {
+										this.finishClimbing();
+									}}
+								/>
+							</View>
 						</View>
 					</View>
 				)}
@@ -202,6 +205,7 @@ export default class CurrentClimb extends React.Component {
 }
 
 const styles = StyleSheet.create({
+	container: { flex: 1 },
 	currentClimbContainer: {
 		flexDirection: 'column',
 	},
@@ -210,6 +214,15 @@ const styles = StyleSheet.create({
 		flexWrap: 'wrap',
 		justifyContent: 'space-around',
 		alignContent: 'flex-start',
+		height: 400,
+		flex: 3,
+		overflow: 'hidden',
+	},
+	timerContainer: {
+		flex: 2,
+	},
+	buttonContainer: {
+		flex: 1,
 	},
 	endSessionButtonContainer: {
 		padding: 10,
