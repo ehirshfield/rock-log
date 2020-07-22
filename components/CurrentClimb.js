@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Text, FlatList } from 'react-native';
+import { View, StyleSheet, Text, FlatList, ScrollView } from 'react-native';
 import RatingButton from './RatingButton';
 import ClimbButton from './ClimbButton';
 import ClimbTimer from './ClimbTimer';
@@ -162,9 +162,12 @@ export default class CurrentClimb extends React.Component {
 					</View>
 				) : (
 					<View style={styles.container}>
-						<View style={styles.ratingContainer}>
-							{climbRatings}
-						</View>
+						<ScrollView style={styles.ratingScrollContainer}>
+							<View style={styles.ratingContainer}>
+								{climbRatings}
+							</View>
+						</ScrollView>
+
 						<View style={styles.timerContainer}>
 							<ClimbTimer time={this.state.runningTime} />
 						</View>
@@ -214,10 +217,10 @@ const styles = StyleSheet.create({
 		flexWrap: 'wrap',
 		justifyContent: 'space-around',
 		alignContent: 'flex-start',
-		height: 400,
-		flex: 3,
+		flex: 1,
 		overflow: 'hidden',
 	},
+	ratingScrollContainer: { flex: 3, height: 500 },
 	timerContainer: {
 		flex: 2,
 	},
