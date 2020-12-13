@@ -36,7 +36,7 @@ export default class ChallengePage extends React.Component {
 
 	onCollectionUpdate(querySnapshot) {
 		let challenges;
-		querySnapshot.forEach((doc) => {
+		querySnapshot.forEach(async (doc) => {
 			challenges = this.state.challenges;
 			if (challenges.find((item) => item.id === doc.id)) {
 				const newChallenges = challenges.filter(
@@ -51,6 +51,21 @@ export default class ChallengePage extends React.Component {
 					isLoading: false,
 					challenges: [...challenges, doc.data()],
 				});
+			}
+
+			if (doc.data().finished && doc.data().endTime < moment().unix()) {
+				const challRef = await firestore
+					.collection('challenges')
+					.doc(doc.id);
+
+				try {
+					await challRef.update({
+						finished: true,
+					});
+					console.log('Marking challenge finished');
+				} catch (error) {
+					console.error(error);
+				}
 			}
 		});
 	}
@@ -153,14 +168,19 @@ export default class ChallengePage extends React.Component {
 				challengerEmail: this.userEmail,
 				challengerId: userId,
 				challengerName: userName,
+				challengerScore: null,
 				finished: false,
 				id: newDoc.id,
 				inviteeEmail: userDoc.email,
 				inviteeId: userDoc.id,
 				inviteeName: userDoc.name,
+				inviteeScore: null,
 				sentDate: moment().format('MM/DD/YYYY'),
 				startTime: 123,
 				endTime: 123,
+				winner: null,
+				loser: null,
+				tie: false,
 			});
 		} catch (error) {
 			console.error(error);

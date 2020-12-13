@@ -4,6 +4,7 @@ import { colors } from '../theme';
 import { firestore } from '../config/firebase';
 import GenericButton from './common/GenericButton';
 import { prepChallenger } from '../utils/challenge';
+import moment from 'moment';
 
 const categoryScores = [
 	{ category: 'Flashes', weight: 300, tie: 150 },
@@ -29,11 +30,13 @@ export default class CurrentChallenge extends React.Component {
 
 			challengerScore: 0,
 			inviteeScore: 0,
+			winner: '',
+			loser: '',
 		};
 		this.renderCategories = this.renderCategories.bind(this);
 	}
 
-	calculateScore() {
+	async calculateScore() {
 		let challengerScore = 0;
 		let inviteeScore = 0;
 		const curr = this.state.currentChallenge;
@@ -58,6 +61,51 @@ export default class CurrentChallenge extends React.Component {
 			challengerScore: challengerScore,
 			inviteeScore: inviteeScore,
 		});
+
+		// UPDATE the db here if the scores are not in the db and pick a winner
+		// Also make sure it has not been decided on a winner first
+		if (
+			!this.props.currentChallenge.winner &&
+			this.props.currentChallenge.endTime < moment().unix()
+		) {
+			let winner,
+				loser,
+				tie = false;
+			if (challengerScore > inviteeScore) {
+				winner = this.props.currentChallenge.challengerName;
+				loser = this.props.currentChallenge.inviteeName;
+				this.setState({
+					winner,
+					loser,
+				});
+			} else if (inviteeScore > challengerScore) {
+				winner = this.props.currentChallenge.inviteeName;
+				loser = this.props.currentChallenge.challengerName;
+				this.setState({
+					winner,
+					loser,
+				});
+			} else if (challengerScore === inviteeScore) {
+				tie = true;
+			}
+			const challengeRef = await firestore
+				.collection('challenges')
+				.doc(this.props.currentChallenge.id);
+
+			try {
+				await challengeRef.update({
+					winner,
+					loser,
+					tie,
+					challengerScore,
+					inviteeScore,
+				});
+				console.log('Marking challenge finished');
+			} catch (error) {
+				console.error(error);
+			}
+		}
+		// check this.props.currentChallenge for finished and a winner, if not then pick winner
 	}
 
 	async renderCategories() {

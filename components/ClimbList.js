@@ -59,8 +59,6 @@ export default class ClimbList extends React.Component {
 			const snapshot = user.docs[0];
 			const docId = snapshot.id;
 			const doc = snapshot.data();
-			console.log('totalClimbs :>> ', doc.totalClimbs);
-			console.log('climbs.length :>> ', climbs.length);
 			if (!doc.totalClimbs || doc.totalClimbs !== climbs.length) {
 				await firestore.collection('users').doc(docId).update({
 					totalClimbs: climbs.length,
@@ -101,7 +99,7 @@ export default class ClimbList extends React.Component {
 			);
 		}
 		return (
-			<View>
+			<View style={styles.container}>
 				<StartingClimbToggle toggleClimbList={this.toggleClimbList} />
 				{!this.state.hideList &&
 					this.state.climbs.map((climb, index) => {
@@ -133,6 +131,9 @@ export default class ClimbList extends React.Component {
 }
 
 const styles = StyleSheet.create({
+	container: {
+		flex: 1,
+	},
 	activity: {
 		position: 'absolute',
 		left: 0,

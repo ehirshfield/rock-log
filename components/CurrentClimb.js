@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Text, FlatList } from 'react-native';
+import { View, StyleSheet, Text, FlatList, ScrollView } from 'react-native';
 import RatingButton from './RatingButton';
 import ClimbButton from './ClimbButton';
 import ClimbTimer from './ClimbTimer';
@@ -161,38 +161,44 @@ export default class CurrentClimb extends React.Component {
 						/>
 					</View>
 				) : (
-					<View>
-						<View style={styles.ratingContainer}>
-							{climbRatings}
-						</View>
+					<View style={styles.container}>
+						<ScrollView style={styles.ratingScrollContainer}>
+							<View style={styles.ratingContainer}>
+								{climbRatings}
+							</View>
+						</ScrollView>
 
-						<ClimbTimer time={this.state.runningTime} />
-						<View style={styles.endSessionButtonContainer}>
-							{!status ? (
-								<ClimbButton
-									title='Resume Climbing'
-									onPress={() => {
-										this.handleClimbTime();
-									}}
-									color='green'
-								/>
-							) : (
-								<ClimbButton
-									title='Pause Climbing'
-									onPress={() => {
-										this.handleClimbTime();
-									}}
-									color='red'
-								/>
-							)}
+						<View style={styles.timerContainer}>
+							<ClimbTimer time={this.state.runningTime} />
 						</View>
-						<View style={styles.endSessionButtonContainer}>
-							<ClimbButton
-								title='Finished Climbing'
-								onPress={() => {
-									this.finishClimbing();
-								}}
-							/>
+						<View style={styles.buttonContainer}>
+							<View style={styles.endSessionButtonContainer}>
+								{!status ? (
+									<ClimbButton
+										title='Resume Climbing'
+										onPress={() => {
+											this.handleClimbTime();
+										}}
+										color='green'
+									/>
+								) : (
+									<ClimbButton
+										title='Pause Climbing'
+										onPress={() => {
+											this.handleClimbTime();
+										}}
+										color='red'
+									/>
+								)}
+							</View>
+							<View style={styles.endSessionButtonContainer}>
+								<ClimbButton
+									title='Finished Climbing'
+									onPress={() => {
+										this.finishClimbing();
+									}}
+								/>
+							</View>
 						</View>
 					</View>
 				)}
@@ -202,6 +208,7 @@ export default class CurrentClimb extends React.Component {
 }
 
 const styles = StyleSheet.create({
+	container: { flex: 1 },
 	currentClimbContainer: {
 		flexDirection: 'column',
 	},
@@ -210,6 +217,15 @@ const styles = StyleSheet.create({
 		flexWrap: 'wrap',
 		justifyContent: 'space-around',
 		alignContent: 'flex-start',
+		flex: 1,
+		overflow: 'hidden',
+	},
+	ratingScrollContainer: { flex: 3, height: 500 },
+	timerContainer: {
+		flex: 2,
+	},
+	buttonContainer: {
+		flex: 1,
 	},
 	endSessionButtonContainer: {
 		padding: 10,
