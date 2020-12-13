@@ -168,14 +168,19 @@ export default class ChallengePage extends React.Component {
 				challengerEmail: this.userEmail,
 				challengerId: userId,
 				challengerName: userName,
+				challengerScore: null,
 				finished: false,
 				id: newDoc.id,
 				inviteeEmail: userDoc.email,
 				inviteeId: userDoc.id,
 				inviteeName: userDoc.name,
+				inviteeScore: null,
 				sentDate: moment().format('MM/DD/YYYY'),
 				startTime: 123,
 				endTime: 123,
+				winner: null,
+				loser: null,
+				tie: false,
 			});
 		} catch (error) {
 			console.error(error);
